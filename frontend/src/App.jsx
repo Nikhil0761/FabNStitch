@@ -2,50 +2,78 @@
    App.jsx - Main Application Component
    ============================================
    
-   📚 LEARNING: Component Composition
+   📚 LEARNING: React Router
    
-   This is the ROOT component of your React app.
-   It imports and combines all other components.
+   React Router enables navigation between pages without page reload.
    
-   Think of it like assembling LEGO blocks:
-   - Each component is a separate block
-   - App.jsx puts them together to form the complete page
+   Key components:
+   - BrowserRouter: Wraps your app to enable routing
+   - Routes: Container for all route definitions
+   - Route: Defines which component shows for each URL path
    
    ============================================ */
 
-// Import our components
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+
+// Layout Components
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
 import Footer from './components/Footer';
+
+// Page Components
+import Home from './pages/Home';
+import Login from './pages/Login';
 
 // Import styles
 import './App.css';
 
-function App() {
+// Layout wrapper - shows Navbar and Footer on most pages
+function Layout({ children }) {
   return (
     <div className="app">
-      {/* Navigation Bar - Fixed at top */}
       <Navbar />
-      
-      {/* Main Content */}
-      <main>
-        {/* Hero Section - First thing visitors see */}
-        <Hero />
-        
-        {/* How It Works Section */}
-        <Features />
-        
-        {/* More sections will be added here:
-            - Fabrics Showcase
-            - Customer Reviews
-            - Contact Form
-        */}
-      </main>
-      
-      {/* Footer */}
+      <main>{children}</main>
       <Footer />
     </div>
+  );
+}
+
+// App Content - Handles routing
+function AppContent() {
+  const location = useLocation();
+  
+  // Pages that don't need the standard layout (no navbar/footer)
+  const noLayoutPages = ['/login', '/register'];
+  const isNoLayout = noLayoutPages.includes(location.pathname);
+
+  return (
+    <>
+      {isNoLayout ? (
+        // Auth pages without navbar/footer
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/register" element={<Register />} /> */}
+        </Routes>
+      ) : (
+        // Regular pages with navbar/footer
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* Add more routes here as we build them:
+                <Route path="/track" element={<TrackOrder />} />
+                <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            */}
+          </Routes>
+        </Layout>
+      )}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

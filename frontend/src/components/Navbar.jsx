@@ -2,56 +2,59 @@
    Navbar Component
    ============================================
    
-   📚 LEARNING: React Component Structure
+   📚 LEARNING: React Router Navigation
    
-   A React component is a JavaScript function that returns JSX (HTML-like syntax).
+   Use <Link> instead of <a> for internal navigation:
+   - <a href="/login"> causes full page reload
+   - <Link to="/login"> navigates without reload (faster!)
    
-   Key concepts:
-   - Components start with CAPITAL letter (Navbar, not navbar)
-   - They return JSX wrapped in parentheses
-   - Use className instead of class (class is reserved in JS)
-   - Export the component to use it elsewhere
+   Use <a> for:
+   - External links
+   - Anchor links (like #home, #about)
    
    ============================================ */
 
-import { useState } from 'react';  // Hook for managing state
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import './Navbar.css';
 
 function Navbar() {
-  // useState hook - manages whether mobile menu is open
-  // isMenuOpen = current value, setIsMenuOpen = function to update it
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Function to toggle mobile menu
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Close menu when a link is clicked
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
 
   return (
     <nav className="navbar">
       <div className="container navbar-container">
-        {/* Logo */}
-        <a href="/" className="navbar-logo">
+        {/* Logo - Use Link for internal navigation */}
+        <Link to="/" className="navbar-logo">
           <img src={logo} alt="FabNStitch" />
-        </a>
+        </Link>
 
-        {/* Navigation Links */}
+        {/* Navigation Links - Use <a> for anchor links within page */}
         <ul className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#fabrics">Fabrics</a></li>
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#reviews">Reviews</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#home" onClick={closeMenu}>Home</a></li>
+          <li><a href="#fabrics" onClick={closeMenu}>Fabrics</a></li>
+          <li><a href="#how-it-works" onClick={closeMenu}>How It Works</a></li>
+          <li><a href="#reviews" onClick={closeMenu}>Reviews</a></li>
+          <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
         </ul>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Use Link for page navigation */}
         <div className="navbar-actions">
-          <a href="/track" className="btn btn-outline">Track Order</a>
-          <a href="/login" className="btn btn-primary">Login</a>
+          <Link to="/track" className="btn btn-outline">Track Order</Link>
+          <Link to="/login" className="btn btn-primary">Login</Link>
         </div>
 
-        {/* Mobile Menu Toggle (hamburger icon) */}
+        {/* Mobile Menu Toggle */}
         <button 
           className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
@@ -66,6 +69,4 @@ function Navbar() {
   );
 }
 
-// Export the component so other files can import it
 export default Navbar;
-
