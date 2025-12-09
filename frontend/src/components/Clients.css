@@ -1,0 +1,83 @@
+/* ============================================
+   Clients Section Styles
+   ============================================ */
+
+.clients {
+  background: var(--color-bg-alt);
+}
+
+.clients-header {
+  margin-bottom: var(--space-3xl);
+}
+
+.clients-header h2 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+}
+
+/* Clients Grid */
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-lg);
+}
+
+/* Client Card */
+.client-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  transition: all var(--transition-normal);
+  border: 1px solid transparent;
+}
+
+.client-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border);
+}
+
+.client-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .clients-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .clients-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .clients-header h2 {
+    font-size: 2rem;
+  }
+
+  .client-card {
+    padding: var(--space-lg) var(--space-md);
+    min-height: 80px;
+  }
+
+  .client-name {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .clients-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

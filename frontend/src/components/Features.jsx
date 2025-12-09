@@ -83,17 +83,6 @@ function Features() {
             </div>
           ))}
         </div>
-
-        {/* CTA Banner */}
-        <div className="features-cta">
-          <div className="cta-content">
-            <h3>Ready to Get Started?</h3>
-            <p>Book your appointment today and experience the art of bespoke tailoring.</p>
-          </div>
-          <a href="#contact" className="btn btn-accent">
-            Book Appointment
-          </a>
-        </div>
       </div>
     </section>
   );

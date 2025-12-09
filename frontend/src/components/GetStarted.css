@@ -1,0 +1,143 @@
+/* ============================================
+   Get Started Section Styles
+   ============================================ */
+
+.get-started {
+  background: var(--color-bg-alt);
+}
+
+.get-started-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+}
+
+/* Left Side - Content */
+.get-started-content h2 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-lg);
+  line-height: 1.2;
+}
+
+.get-started-description {
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+/* Benefits List */
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefits-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.benefits-list svg {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* Right Side - Form Card */
+.get-started-form-card {
+  background: var(--color-white);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.get-started-form-card h3 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xl);
+}
+
+/* Form Styles */
+.contact-form .form-group {
+  margin-bottom: var(--space-md);
+}
+
+.contact-form input,
+.contact-form select {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  background: var(--color-white);
+  transition: all var(--transition-fast);
+}
+
+.contact-form input:focus,
+.contact-form select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+.contact-form input::placeholder {
+  color: #999;
+}
+
+.contact-form select {
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.contact-form select option[value=""] {
+  color: #999;
+}
+
+/* Submit Button */
+.contact-form .btn {
+  margin-top: var(--space-md);
+}
+
+/* Form Note */
+.form-note {
+  text-align: center;
+  margin-top: var(--space-lg);
+  margin-bottom: 0;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .get-started-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  .get-started-content {
+    text-align: center;
+  }
+
+  .benefits-list li {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .get-started-content h2 {
+    font-size: 2rem;
+  }
+
+  .get-started-form-card {
+    padding: var(--space-lg);
+  }
+}
+

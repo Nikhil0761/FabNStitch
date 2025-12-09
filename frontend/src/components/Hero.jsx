@@ -14,7 +14,7 @@
    ============================================ */
 
 import './Hero.css';
-import blazerImage from '../assets/blazer.jpeg';
+import blazerImage from '../assets/Blazer_collection.png';
 
 function Hero() {
   return (
@@ -27,7 +27,6 @@ function Hero() {
       <div className="container hero-container">
         {/* Left side - Text content */}
         <div className="hero-content">
-          <span className="hero-tagline">✂️ Bespoke Tailoring</span>
           <h1>
             Crafted to <span className="text-accent">Perfection</span>,
             <br />
@@ -74,7 +73,7 @@ function Hero() {
           <div className="hero-image-wrapper">
             <img 
               src={blazerImage} 
-              alt="Premium Blazer" 
+              alt="Premium Blazer Collection" 
               className="hero-image"
             />
           </div>
