@@ -1,16 +1,5 @@
 /* ============================================
    App.jsx - Main Application Component
-   ============================================
-   
-   📚 LEARNING: React Router
-   
-   React Router enables navigation between pages without page reload.
-   
-   Key components:
-   - BrowserRouter: Wraps your app to enable routing
-   - Routes: Container for all route definitions
-   - Route: Defines which component shows for each URL path
-   
    ============================================ */
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
@@ -22,6 +11,17 @@ import Footer from './components/Footer';
 // Page Components
 import Home from './pages/Home';
 import Login from './pages/Login';
+import TrackOrder from './pages/TrackOrder';
+
+// Customer Pages
+import CustomerDashboard from './pages/CustomerDashboard';
+import CustomerOrders from './pages/CustomerOrders';
+import CustomerProfile from './pages/CustomerProfile';
+import CustomerSupport from './pages/CustomerSupport';
+
+// Tailor Pages
+import TailorDashboard from './pages/TailorDashboard';
+import TailorOrders from './pages/TailorOrders';
 
 // Import styles
 import './App.css';
@@ -41,27 +41,40 @@ function Layout({ children }) {
 function AppContent() {
   const location = useLocation();
   
-  // Pages that don't need the standard layout (no navbar/footer)
+  // Pages that don't need any layout wrapper
   const noLayoutPages = ['/login', '/register'];
   const isNoLayout = noLayoutPages.includes(location.pathname);
+  
+  // Dashboard pages - have their own layout (no website navbar/footer)
+  const dashboardPages = ['/customer', '/tailor'];
+  const isDashboard = dashboardPages.some(path => location.pathname.startsWith(path));
 
   return (
     <>
       {isNoLayout ? (
-        // Auth pages without navbar/footer
+        // Auth pages - completely standalone
         <Routes>
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/register" element={<Register />} /> */}
+        </Routes>
+      ) : isDashboard ? (
+        // Dashboard pages - have their own header/sidebar built-in
+        <Routes>
+          {/* Customer Dashboard Routes */}
+          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+          <Route path="/customer/orders" element={<CustomerOrders />} />
+          <Route path="/customer/profile" element={<CustomerProfile />} />
+          <Route path="/customer/support" element={<CustomerSupport />} />
+          
+          {/* Tailor Dashboard Routes */}
+          <Route path="/tailor/dashboard" element={<TailorDashboard />} />
+          <Route path="/tailor/orders" element={<TailorOrders />} />
         </Routes>
       ) : (
-        // Regular pages with navbar/footer
+        // Regular pages with website navbar/footer
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            {/* Add more routes here as we build them:
-                <Route path="/track" element={<TrackOrder />} />
-                <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-            */}
+            <Route path="/track" element={<TrackOrder />} />
           </Routes>
         </Layout>
       )}

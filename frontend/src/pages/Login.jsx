@@ -55,16 +55,45 @@ function Login() {
     }
 
     setIsLoading(true);
+    setError('');
     
-    // TODO: Replace with actual API call to Spring Boot backend
-    // Simulating API call with timeout
-    setTimeout(() => {
+    try {
+      // Call backend API
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // Store token and user info in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Redirect based on user role
+      if (data.user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (data.user.role === 'tailor') {
+        navigate('/tailor/dashboard');
+      } else {
+        navigate('/customer/dashboard');
+      }
+
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
       setIsLoading(false);
-      // For now, just show success and redirect
-      console.log('Login attempt:', formData);
-      // navigate('/dashboard'); // Uncomment when dashboard is ready
-      alert('Login functionality will connect to Spring Boot backend!');
-    }, 1000);
+    }
   };
 
   return (

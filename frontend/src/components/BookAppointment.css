@@ -1,0 +1,44 @@
+/* ============================================
+   Book Appointment CTA Styles
+   ============================================ */
+
+.book-appointment {
+  background: var(--color-bg);
+}
+
+.cta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1a1a1a 100%);
+  padding: var(--space-2xl) var(--space-3xl);
+  border-radius: var(--radius-lg);
+  color: var(--color-white);
+}
+
+.cta-content h3 {
+  color: var(--color-white);
+  font-size: 1.75rem;
+  margin-bottom: var(--space-sm);
+}
+
+.cta-content p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cta-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+  }
+
+  .cta-content h3 {
+    font-size: 1.5rem;
+  }
+}
+

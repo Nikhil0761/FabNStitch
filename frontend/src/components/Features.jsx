@@ -21,7 +21,7 @@ function Features() {
       id: 1,
       icon: '📞',
       title: 'Book Appointment',
-      description: 'Schedule a home visit or come to our studio for personalized consultation.'
+      description: 'Arrange an organization visit - Tailored Solution for your Students/Professors.'
     },
     {
       id: 2,
@@ -62,6 +62,7 @@ function Features() {
         <div className="section-header text-center">
           <span className="section-label">Our Process</span>
           <h2>How It Works</h2>
+          <br />
           <p className="section-description">
             From your first consultation to the final delivery, 
             we ensure a seamless bespoke tailoring experience.
@@ -82,17 +83,6 @@ function Features() {
               <p>{step.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* CTA Banner */}
-        <div className="features-cta">
-          <div className="cta-content">
-            <h3>Ready to Get Started?</h3>
-            <p>Book your appointment today and experience the art of bespoke tailoring.</p>
-          </div>
-          <a href="#contact" className="btn btn-accent">
-            Book Appointment
-          </a>
         </div>
       </div>
     </section>

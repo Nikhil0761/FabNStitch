@@ -14,7 +14,7 @@
    ============================================ */
 
 import './Hero.css';
-import blazerImage from '../assets/blazer.jpeg';
+import blazerImage from '../assets/Blazer_collection.png';
 
 function Hero() {
   return (
@@ -27,11 +27,10 @@ function Hero() {
       <div className="container hero-container">
         {/* Left side - Text content */}
         <div className="hero-content">
-          <span className="hero-tagline">✂️ Bespoke Tailoring</span>
           <h1>
-            Crafted to <span className="text-accent">Perfection</span>,
-            <br />
-            Tailored Just for You
+            Redefining  <span className="text-accent">Organization </span>identity,
+            {/* <br /> */}
+            with Premium Custom Tailored Uniforms
           </h1>
           <p className="hero-description">
             Experience the art of custom tailoring with FabNStitch. 
@@ -55,7 +54,7 @@ function Hero() {
           {/* Trust indicators */}
           <div className="hero-stats">
             <div className="stat">
-              <span className="stat-number">500+</span>
+              <span className="stat-number">5000+</span>
               <span className="stat-label">Happy Customers</span>
             </div>
             <div className="stat">
@@ -63,7 +62,7 @@ function Hero() {
               <span className="stat-label">Premium Fabrics</span>
             </div>
             <div className="stat">
-              <span className="stat-number">4.9</span>
+              <span className="stat-number">4.7/5</span>
               <span className="stat-label">Customer Rating</span>
             </div>
           </div>
@@ -74,7 +73,7 @@ function Hero() {
           <div className="hero-image-wrapper">
             <img 
               src={blazerImage} 
-              alt="Premium Blazer" 
+              alt="Premium Blazer Collection" 
               className="hero-image"
             />
           </div>
