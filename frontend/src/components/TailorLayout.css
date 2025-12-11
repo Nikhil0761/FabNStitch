@@ -1,0 +1,420 @@
+/* ============================================
+   Tailor Layout - Premium Design System
+   ============================================ */
+
+.tailor-layout {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+/* Loading State - Refined */
+.tailor-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: var(--space-xl);
+  width: 100%;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.tailor-loading .loader {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(99, 102, 241, 0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.tailor-loading p {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Tailor Top Bar - Premium Header
+   ============================================ */
+.tailor-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(145deg, #1e1b4b 0%, #312e81 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  z-index: 100;
+  box-shadow: 
+    0 4px 20px rgba(30, 27, 75, 0.15),
+    0 2px 8px rgba(30, 27, 75, 0.1);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.tailor-logo img {
+  height: 36px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease;
+}
+
+.tailor-logo:hover img {
+  opacity: 0.9;
+}
+
+.tailor-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  backdrop-filter: blur(4px);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* User Menu - Premium */
+.user-menu-wrapper {
+  position: relative;
+}
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+}
+
+.user-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.tailor-avatar {
+  background: linear-gradient(145deg, #818cf8, #6366f1);
+  color: white;
+}
+
+.user-name-topbar {
+  font-weight: 500;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.user-menu-trigger svg {
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s ease;
+}
+
+.user-menu-trigger:hover svg {
+  color: white;
+}
+
+/* User Dropdown - Premium */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  z-index: 200;
+  animation: dropdownSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  padding: var(--space-lg);
+  background: linear-gradient(to bottom, #fafafa, #f5f5f5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-header strong {
+  display: block;
+  color: #0f172a;
+  margin-bottom: 2px;
+  font-size: 0.95rem;
+}
+
+.dropdown-header span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: rgba(99, 102, 241, 0.04);
+  color: #6366f1;
+}
+
+.dropdown-item svg {
+  opacity: 0.6;
+}
+
+.dropdown-item:hover svg {
+  opacity: 1;
+}
+
+.dropdown-item.logout {
+  color: #dc2626;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.04);
+}
+
+/* ============================================
+   Tailor Sidebar - Premium Navigation
+   ============================================ */
+.tailor-sidebar {
+  background: white;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  padding: var(--space-xl);
+  padding-top: calc(64px + var(--space-xl));
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  box-shadow: 1px 0 12px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-user {
+  text-align: center;
+  padding-bottom: var(--space-xl);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  margin-bottom: var(--space-xl);
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 auto var(--space-md);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+}
+
+.tailor-avatar-large {
+  background: linear-gradient(145deg, #818cf8, #6366f1);
+  color: white;
+}
+
+.sidebar-user h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-xs);
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.sidebar-user p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: linear-gradient(145deg, #818cf8, #6366f1);
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Sidebar Navigation - Premium */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 14px var(--space-lg);
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.sidebar-link:hover {
+  background: rgba(99, 102, 241, 0.06);
+  color: #6366f1;
+}
+
+.sidebar-link.active {
+  background: linear-gradient(145deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sidebar-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.sidebar-link:hover svg,
+.sidebar-link.active svg {
+  opacity: 1;
+}
+
+.logout-btn {
+  margin-top: var(--space-lg);
+  color: #dc2626;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  padding-top: var(--space-lg);
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: #dc2626;
+}
+
+/* ============================================
+   Tailor Main Content
+   ============================================ */
+.tailor-main {
+  flex: 1;
+  padding: var(--space-2xl);
+  padding-top: calc(64px + var(--space-2xl));
+  margin-left: 280px;
+  min-width: 0;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+@media (max-width: 1024px) {
+  .tailor-sidebar {
+    display: none;
+  }
+
+  .tailor-main {
+    margin-left: 0;
+  }
+
+  .tailor-topbar {
+    padding: 0 var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .user-name-topbar {
+    display: none;
+  }
+
+  .topbar-left {
+    gap: var(--space-md);
+  }
+
+  .tailor-badge {
+    display: none;
+  }
+
+  .tailor-main {
+    padding: var(--space-lg);
+    padding-top: calc(64px + var(--space-lg));
+  }
+
+  .tailor-topbar {
+    height: 56px;
+  }
+
+  .user-menu-trigger {
+    padding: 6px 12px;
+  }
+}

@@ -12,10 +12,16 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import TrackOrder from './pages/TrackOrder';
+
+// Customer Pages
 import CustomerDashboard from './pages/CustomerDashboard';
 import CustomerOrders from './pages/CustomerOrders';
 import CustomerProfile from './pages/CustomerProfile';
 import CustomerSupport from './pages/CustomerSupport';
+
+// Tailor Pages
+import TailorDashboard from './pages/TailorDashboard';
+import TailorOrders from './pages/TailorOrders';
 
 // Import styles
 import './App.css';
@@ -40,7 +46,7 @@ function AppContent() {
   const isNoLayout = noLayoutPages.includes(location.pathname);
   
   // Dashboard pages - have their own layout (no website navbar/footer)
-  const dashboardPages = ['/customer'];
+  const dashboardPages = ['/customer', '/tailor'];
   const isDashboard = dashboardPages.some(path => location.pathname.startsWith(path));
 
   return (
@@ -53,10 +59,15 @@ function AppContent() {
       ) : isDashboard ? (
         // Dashboard pages - have their own header/sidebar built-in
         <Routes>
+          {/* Customer Dashboard Routes */}
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
           <Route path="/customer/orders" element={<CustomerOrders />} />
           <Route path="/customer/profile" element={<CustomerProfile />} />
           <Route path="/customer/support" element={<CustomerSupport />} />
+          
+          {/* Tailor Dashboard Routes */}
+          <Route path="/tailor/dashboard" element={<TailorDashboard />} />
+          <Route path="/tailor/orders" element={<TailorOrders />} />
         </Routes>
       ) : (
         // Regular pages with website navbar/footer

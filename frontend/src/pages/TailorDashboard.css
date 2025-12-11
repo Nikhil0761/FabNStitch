@@ -1,0 +1,566 @@
+/* ============================================
+   Tailor Dashboard - Premium Design System
+   ============================================ */
+
+.tailor-dashboard {
+  max-width: 1200px;
+}
+
+/* Loading & Error - Refined */
+.dashboard-loading,
+.dashboard-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: var(--space-xl);
+}
+
+.dashboard-loading .loader {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(99, 102, 241, 0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Quick Stats Bar - Premium Cards
+   ============================================ */
+.quick-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.quick-stat {
+  background: white;
+  border-radius: 16px;
+  padding: var(--space-xl);
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quick-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.quick-stat.highlight {
+  background: linear-gradient(145deg, #fefce8 0%, #fef9c3 100%);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+.quick-stat.success {
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.qs-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.quick-stat.highlight .qs-number { color: #854d0e; }
+.quick-stat.success .qs-number { color: #047857; }
+
+.qs-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* ============================================
+   Workflow Progress - Elegant Pipeline
+   ============================================ */
+.workflow-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  padding: var(--space-xl) var(--space-2xl);
+  border-radius: 20px;
+  margin-bottom: var(--space-2xl);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow-x: auto;
+}
+
+.workflow-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 12px;
+  min-width: 80px;
+  transition: all 0.3s ease;
+}
+
+.workflow-stage:hover {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.workflow-stage.active {
+  background: linear-gradient(145deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  box-shadow: 
+    0 4px 12px rgba(99, 102, 241, 0.3),
+    0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+.workflow-stage.done {
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.stage-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.workflow-stage.active .stage-count { color: white; }
+.workflow-stage.done .stage-count { color: #047857; }
+
+.stage-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.workflow-arrow {
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+/* ============================================
+   Sections - Clean Headers
+   ============================================ */
+.urgent-section,
+.work-section {
+  margin-bottom: var(--space-2xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+}
+
+.section-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+}
+
+.section-header.urgent h2 {
+  color: #dc2626;
+}
+
+.view-all-link {
+  color: #6366f1;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.view-all-link:hover {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+/* Empty Queue - Elegant */
+.empty-queue {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-2xl);
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.empty-queue.small {
+  padding: var(--space-xl);
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-lg);
+  filter: grayscale(0.2);
+}
+
+.empty-queue h3 {
+  color: #059669;
+  margin-bottom: var(--space-sm);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.empty-queue p {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   Work Cards Grid
+   ============================================ */
+.work-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* ============================================
+   Work Card - Premium Design
+   ============================================ */
+.work-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.work-card:hover {
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04);
+  transform: translateY(-3px);
+}
+
+/* Urgency Styles - Subtle but Clear */
+.work-card.overdue {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(to bottom, #fef2f2, white 40%);
+}
+
+.work-card.today {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(to bottom, #fffbeb, white 40%);
+}
+
+.work-card.soon {
+  border-color: rgba(234, 179, 8, 0.2);
+}
+
+/* Progress Bar - Sleek */
+.progress-bar {
+  height: 3px;
+  background: linear-gradient(to right, #f1f5f9, #e2e8f0);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1 0%, #10b981 100%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Card Header */
+.work-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  background: rgba(248, 250, 252, 0.5);
+}
+
+.order-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.order-id {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6366f1;
+  letter-spacing: 0.02em;
+}
+
+.urgency-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+}
+
+.urgency-badge.overdue {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.urgency-badge.today {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.urgency-badge.soon {
+  background: rgba(234, 179, 8, 0.1);
+  color: #ca8a04;
+}
+
+.status-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+}
+
+.status-chip.status-confirmed { 
+  background: rgba(59, 130, 246, 0.1); 
+  color: #2563eb; 
+}
+.status-chip.status-stitching { 
+  background: rgba(16, 185, 129, 0.1); 
+  color: #059669; 
+}
+.status-chip.status-finishing { 
+  background: rgba(245, 158, 11, 0.1); 
+  color: #d97706; 
+}
+.status-chip.status-quality { 
+  background: rgba(139, 92, 246, 0.1); 
+  color: #7c3aed; 
+}
+.status-chip.status-ready { 
+  background: rgba(6, 182, 212, 0.1); 
+  color: #0891b2; 
+}
+
+/* Card Content */
+.work-card-content {
+  padding: var(--space-lg);
+}
+
+.main-info {
+  margin-bottom: var(--space-md);
+}
+
+.style-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.01em;
+}
+
+.fabric-details {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Meta Row */
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-md);
+  border-top: 1px dashed rgba(0, 0, 0, 0.06);
+}
+
+.customer-mini {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.customer-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.due-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.due-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.due-date {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.due-date.overdue { color: #dc2626; }
+.due-date.today { color: #d97706; }
+.due-date.soon { color: #ca8a04; }
+
+/* Card Footer */
+.work-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(to bottom, rgba(248, 250, 252, 0.5), rgba(241, 245, 249, 0.8));
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Quick Contact Buttons - Refined */
+.quick-contact {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: white;
+}
+
+.contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contact-btn.call:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.contact-btn.whatsapp:hover {
+  background: #ecfdf5;
+  border-color: #22c55e;
+}
+
+.contact-btn.details:hover {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+
+/* Quick Update Button - Premium */
+.quick-update-btn {
+  padding: 10px 20px;
+  background: linear-gradient(145deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+  letter-spacing: 0.01em;
+}
+
+.quick-update-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+.quick-update-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.quick-update-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   Responsive - Refined
+   ============================================ */
+@media (max-width: 768px) {
+  .quick-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .quick-stat {
+    padding: var(--space-lg);
+  }
+
+  .qs-number {
+    font-size: 2rem;
+  }
+
+  .workflow-progress {
+    padding: var(--space-lg);
+    gap: var(--space-sm);
+  }
+
+  .workflow-stage {
+    min-width: 60px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .stage-count {
+    font-size: 1.4rem;
+  }
+
+  .work-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-stats-bar {
+    gap: var(--space-sm);
+  }
+
+  .quick-stat {
+    padding: var(--space-md);
+    border-radius: 12px;
+  }
+
+  .qs-number {
+    font-size: 1.75rem;
+  }
+
+  .work-card {
+    border-radius: 12px;
+  }
+}

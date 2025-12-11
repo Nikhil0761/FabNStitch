@@ -25,6 +25,7 @@ dotenv.config();
 // Import routes
 const authRoutes = require('./routes/auth');
 const customerRoutes = require('./routes/customer');
+const tailorRoutes = require('./routes/tailor');
 const orderRoutes = require('./routes/orders');
 
 // Import database initialization
@@ -66,6 +67,9 @@ app.use('/api/auth', authRoutes);
 
 // Customer routes (profile, dashboard data)
 app.use('/api/customer', customerRoutes);
+
+// Tailor routes (orders, status updates)
+app.use('/api/tailor', tailorRoutes);
 
 // Order routes
 app.use('/api/orders', orderRoutes);
