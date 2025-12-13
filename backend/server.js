@@ -39,8 +39,21 @@ const app = express();
 // ============================================
 
 // Enable CORS (allows frontend to call backend)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:5173', // React frontend URL
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   credentials: true
 }));
 
@@ -98,13 +111,12 @@ const PORT = process.env.PORT || 5000;
 // Initialize database then start server
 initializeDatabase()
   .then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`
 ╔═══════════════════════════════════════════╗
 ║       FabNStitch Backend Server           ║
 ╠═══════════════════════════════════════════╣
 ║  🚀 Server running on port ${PORT}            ║
-║  📡 API URL: http://localhost:${PORT}/api    ║
 ║  🔧 Environment: ${process.env.NODE_ENV || 'development'}            ║
 ╚═══════════════════════════════════════════╝
       `);
