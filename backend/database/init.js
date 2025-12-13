@@ -212,28 +212,52 @@ function initializeDatabase() {
 
         fabrics.forEach(fabric => insertFabric.run(...fabric));
 
-        // Create demo order
-        const orderId = 'ORD' + Date.now().toString().slice(-8);
-        db.prepare(`
+        // Create multiple demo orders for different statuses
+        const demoOrders = [
+          // Confirmed orders
+          { style: 'Single-Breasted Blazer', status: 'confirmed', fabricId: 1, price: 11500, days: 10 },
+          { style: 'Formal Suit Jacket', status: 'confirmed', fabricId: 2, price: 13500, days: 12 },
+          { style: 'Casual Sport Coat', status: 'confirmed', fabricId: 3, price: 9500, days: 8 },
+          // Stitching orders
+          { style: 'Double-Breasted Blazer', status: 'stitching', fabricId: 1, price: 12500, days: 5 },
+          { style: 'Tuxedo Jacket', status: 'stitching', fabricId: 4, price: 18500, days: 7 },
+          { style: 'Nehru Jacket', status: 'stitching', fabricId: 2, price: 8500, days: 3 },
+          // Finishing orders
+          { style: 'Wedding Sherwani', status: 'finishing', fabricId: 4, price: 22000, days: 2 },
+          { style: 'Linen Summer Blazer', status: 'finishing', fabricId: 3, price: 7500, days: 1 },
+          { style: 'Classic Navy Blazer', status: 'finishing', fabricId: 1, price: 10500, days: 0 }
+        ];
+
+        const insertOrder = db.prepare(`
           INSERT INTO orders (order_id, user_id, tailor_id, fabric_id, style, status, price, delivery_address, estimated_delivery)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).run(orderId, 2, 3, 1, 'Double-Breasted Blazer', 'stitching', 12500, '123 Main Street, Mumbai', '2025-01-15');
+        `);
 
-        // Add order status history
-        db.prepare(`
+        const insertHistory = db.prepare(`
           INSERT INTO order_status_history (order_id, status, notes, updated_by)
           VALUES (?, ?, ?, ?)
-        `).run(1, 'pending', 'Order placed successfully', 2);
+        `);
 
-        db.prepare(`
-          INSERT INTO order_status_history (order_id, status, notes, updated_by)
-          VALUES (?, ?, ?, ?)
-        `).run(1, 'confirmed', 'Order confirmed by tailor', 3);
+        demoOrders.forEach((order, index) => {
+          const orderId = 'ORD' + (10000000 + index).toString();
+          const dueDate = new Date();
+          dueDate.setDate(dueDate.getDate() + order.days);
+          const dueDateStr = dueDate.toISOString().split('T')[0];
+          
+          const result = insertOrder.run(
+            orderId, 2, 3, order.fabricId, order.style, order.status, 
+            order.price, '123 Main Street, Mumbai', dueDateStr
+          );
 
-        db.prepare(`
-          INSERT INTO order_status_history (order_id, status, notes, updated_by)
-          VALUES (?, ?, ?, ?)
-        `).run(1, 'stitching', 'Stitching in progress', 3);
+          // Add status history
+          insertHistory.run(result.lastInsertRowid, 'confirmed', 'Order confirmed', 3);
+          if (order.status === 'stitching' || order.status === 'finishing') {
+            insertHistory.run(result.lastInsertRowid, 'stitching', 'Started stitching', 3);
+          }
+          if (order.status === 'finishing') {
+            insertHistory.run(result.lastInsertRowid, 'finishing', 'Started finishing', 3);
+          }
+        });
 
         console.log('✅ Demo data created successfully!');
       }

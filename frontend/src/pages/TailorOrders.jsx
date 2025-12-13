@@ -1,5 +1,5 @@
 /* ============================================
-   Tailor Orders Page - Kanban & List Views
+   Tailor Orders Page - Kanban with Drag & Drop
    ============================================ */
 
 import { useState, useEffect } from 'react';
@@ -16,29 +16,30 @@ function TailorOrders() {
   
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'list'
+  const [viewMode, setViewMode] = useState('kanban');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderHistory, setOrderHistory] = useState([]);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateNote, setUpdateNote] = useState('');
   const [message, setMessage] = useState({ type: '', text: '' });
+  
+  // Drag and Drop State
+  const [draggedOrder, setDraggedOrder] = useState(null);
+  const [dragOverColumn, setDragOverColumn] = useState(null);
 
-  // Kanban columns
+  // Kanban columns - 3 stages for tailor
   const kanbanColumns = [
     { key: 'confirmed', label: 'Confirmed', icon: '✓', color: '#3b82f6' },
     { key: 'stitching', label: 'Stitching', icon: '🧵', color: '#10b981' },
-    { key: 'finishing', label: 'Finishing', icon: '✨', color: '#f59e0b' },
-    { key: 'quality_check', label: 'QC', icon: '🔍', color: '#8b5cf6' },
-    { key: 'ready', label: 'Ready', icon: '📦', color: '#06b6d4' }
+    { key: 'finishing', label: 'Finishing', icon: '✨', color: '#f59e0b' }
   ];
 
-  // Status flow
-  const nextStatusMap = {
-    confirmed: 'stitching',
-    stitching: 'finishing',
-    finishing: 'quality_check',
-    quality_check: 'ready'
+  // Valid transitions - which columns can accept drops from which
+  const validTransitions = {
+    confirmed: ['stitching'],
+    stitching: ['confirmed', 'finishing'],
+    finishing: ['stitching']
   };
 
   useEffect(() => {
@@ -48,7 +49,6 @@ function TailorOrders() {
     }
     fetchOrders();
     
-    // Check if there's an order ID in URL to open
     const orderId = searchParams.get('id');
     if (orderId) {
       fetchOrderDetails(orderId);
@@ -112,7 +112,7 @@ function TailorOrders() {
 
       if (!response.ok) throw new Error('Failed to update status');
 
-      setMessage({ type: 'success', text: 'Status updated!' });
+      setMessage({ type: 'success', text: `Order moved to ${formatStatus(newStatus)}!` });
       setUpdateNote('');
       fetchOrders();
       
@@ -126,6 +126,65 @@ function TailorOrders() {
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  // ============================================
+  // DRAG AND DROP HANDLERS
+  // ============================================
+  
+  const handleDragStart = (e, order) => {
+    setDraggedOrder(order);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', order.order_id);
+    // Add dragging class after a short delay for visual feedback
+    setTimeout(() => {
+      e.target.classList.add('dragging');
+    }, 0);
+  };
+
+  const handleDragEnd = (e) => {
+    e.target.classList.remove('dragging');
+    setDraggedOrder(null);
+    setDragOverColumn(null);
+  };
+
+  const handleDragOver = (e, columnKey) => {
+    e.preventDefault();
+    
+    if (!draggedOrder) return;
+    
+    // Check if this is a valid drop target
+    const canDrop = validTransitions[draggedOrder.status]?.includes(columnKey);
+    
+    if (canDrop) {
+      e.dataTransfer.dropEffect = 'move';
+      setDragOverColumn(columnKey);
+    } else {
+      e.dataTransfer.dropEffect = 'none';
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    // Only clear if we're leaving the column entirely
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOverColumn(null);
+    }
+  };
+
+  const handleDrop = async (e, targetStatus) => {
+    e.preventDefault();
+    setDragOverColumn(null);
+    
+    if (!draggedOrder) return;
+    
+    // Check if this is a valid transition
+    const canDrop = validTransitions[draggedOrder.status]?.includes(targetStatus);
+    
+    if (canDrop && draggedOrder.status !== targetStatus) {
+      await handleStatusUpdate(draggedOrder.order_id, targetStatus, `Dragged to ${formatStatus(targetStatus)}`);
+    }
+    
+    setDraggedOrder(null);
   };
 
   const formatStatus = (status) => {
@@ -158,6 +217,12 @@ function TailorOrders() {
     return acc;
   }, {});
 
+  // Check if a column can receive the dragged order
+  const canReceiveDrop = (columnKey) => {
+    if (!draggedOrder) return false;
+    return validTransitions[draggedOrder.status]?.includes(columnKey);
+  };
+
   if (isLoading) {
     return (
       <TailorLayout>
@@ -176,7 +241,7 @@ function TailorOrders() {
         <div className="page-header">
           <div>
             <h1>My Orders</h1>
-            <p>{orders.length} orders assigned to you</p>
+            <p>{orders.length} orders assigned to you • <span className="drag-hint">Drag cards to move between stages</span></p>
           </div>
           <div className="view-toggle">
             <button 
@@ -201,11 +266,17 @@ function TailorOrders() {
           </div>
         )}
 
-        {/* Kanban Board View */}
+        {/* Kanban Board View with Drag & Drop */}
         {viewMode === 'kanban' && (
           <div className="kanban-board">
             {kanbanColumns.map(column => (
-              <div key={column.key} className="kanban-column">
+              <div 
+                key={column.key} 
+                className={`kanban-column ${dragOverColumn === column.key ? 'drag-over' : ''} ${canReceiveDrop(column.key) ? 'can-drop' : ''}`}
+                onDragOver={(e) => handleDragOver(e, column.key)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, column.key)}
+              >
                 <div className="column-header" style={{ borderColor: column.color }}>
                   <span className="column-icon">{column.icon}</span>
                   <span className="column-title">{column.label}</span>
@@ -218,14 +289,18 @@ function TailorOrders() {
                       order={order}
                       urgency={getUrgency(order.estimated_delivery)}
                       onViewDetails={() => fetchOrderDetails(order.order_id)}
-                      onMoveNext={() => handleStatusUpdate(order.order_id, nextStatusMap[order.status])}
-                      canMoveNext={!!nextStatusMap[order.status]}
                       formatDate={formatDate}
-                      isUpdating={isUpdating}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                      isDragging={draggedOrder?.order_id === order.order_id}
                     />
                   ))}
                   {ordersByStatus[column.key]?.length === 0 && (
-                    <div className="empty-column">No orders</div>
+                    <div className="empty-column">
+                      {draggedOrder && canReceiveDrop(column.key) 
+                        ? '📥 Drop here' 
+                        : 'No orders'}
+                    </div>
                   )}
                 </div>
               </div>
@@ -255,6 +330,7 @@ function TailorOrders() {
                 <tbody>
                   {orders.map(order => {
                     const urgency = getUrgency(order.estimated_delivery);
+                    const nextStatus = validTransitions[order.status]?.[0];
                     return (
                       <tr key={order.id} className={urgency}>
                         <td>
@@ -290,13 +366,13 @@ function TailorOrders() {
                             >
                               View
                             </button>
-                            {nextStatusMap[order.status] && (
+                            {nextStatus && (
                               <button 
                                 className="action-btn move"
-                                onClick={() => handleStatusUpdate(order.order_id, nextStatusMap[order.status])}
+                                onClick={() => handleStatusUpdate(order.order_id, nextStatus)}
                                 disabled={isUpdating}
                               >
-                                → {formatStatus(nextStatusMap[order.status])}
+                                → {formatStatus(nextStatus)}
                               </button>
                             )}
                           </div>
@@ -326,7 +402,7 @@ function TailorOrders() {
               
               <div className="modal-body">
                 {/* Quick Update */}
-                {nextStatusMap[selectedOrder.status] && (
+                {validTransitions[selectedOrder.status]?.length > 0 && (
                   <div className="quick-update-section">
                     <input
                       type="text"
@@ -337,10 +413,10 @@ function TailorOrders() {
                     />
                     <button
                       className="big-update-btn"
-                      onClick={() => handleStatusUpdate(selectedOrder.order_id, nextStatusMap[selectedOrder.status], updateNote)}
+                      onClick={() => handleStatusUpdate(selectedOrder.order_id, validTransitions[selectedOrder.status][0], updateNote)}
                       disabled={isUpdating}
                     >
-                      {isUpdating ? 'Updating...' : `Move to ${formatStatus(nextStatusMap[selectedOrder.status])}`}
+                      {isUpdating ? 'Updating...' : `Move to ${formatStatus(validTransitions[selectedOrder.status][0])}`}
                     </button>
                   </div>
                 )}
@@ -394,7 +470,7 @@ function TailorOrders() {
                   </div>
                 </div>
 
-                {/* Measurements - PROMINENT */}
+                {/* Measurements */}
                 {selectedOrder.chest && (
                   <div className="info-section measurements-section">
                     <h3>📏 Measurements</h3>
@@ -455,10 +531,17 @@ function TailorOrders() {
   );
 }
 
-// Kanban Card Component
-function KanbanCard({ order, urgency, onViewDetails, onMoveNext, canMoveNext, formatDate, isUpdating }) {
+// Kanban Card Component with Drag Support
+function KanbanCard({ order, urgency, onViewDetails, formatDate, onDragStart, onDragEnd, isDragging }) {
   return (
-    <div className={`kanban-card ${urgency}`} onClick={onViewDetails}>
+    <div 
+      className={`kanban-card ${urgency} ${isDragging ? 'dragging' : ''}`} 
+      onClick={onViewDetails}
+      draggable="true"
+      onDragStart={(e) => onDragStart(e, order)}
+      onDragEnd={onDragEnd}
+    >
+      <div className="drag-handle">⋮⋮</div>
       <div className="kanban-card-header">
         <span className="kanban-order-id">{order.order_id}</span>
         {urgency !== 'normal' && (
@@ -474,16 +557,6 @@ function KanbanCard({ order, urgency, onViewDetails, onMoveNext, canMoveNext, fo
           <span className={`due ${urgency}`}>{formatDate(order.estimated_delivery)}</span>
         </div>
       </div>
-      
-      {canMoveNext && (
-        <button 
-          className="kanban-move-btn"
-          onClick={(e) => { e.stopPropagation(); onMoveNext(); }}
-          disabled={isUpdating}
-        >
-          {isUpdating ? '...' : '→ Next'}
-        </button>
-      )}
     </div>
   );
 }

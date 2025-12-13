@@ -90,9 +90,7 @@ function TailorDashboard() {
   const getNextStatus = (currentStatus) => {
     const flow = {
       confirmed: 'stitching',
-      stitching: 'finishing',
-      finishing: 'quality_check',
-      quality_check: 'ready'
+      stitching: 'finishing'
     };
     return flow[currentStatus];
   };
@@ -123,11 +121,9 @@ function TailorDashboard() {
 
   const getProgressPercent = (status) => {
     const progress = {
-      confirmed: 20,
-      stitching: 40,
-      finishing: 60,
-      quality_check: 80,
-      ready: 100
+      confirmed: 33,
+      stitching: 66,
+      finishing: 100
     };
     return progress[status] || 0;
   };
@@ -194,8 +190,7 @@ function TailorDashboard() {
     );
   }
 
-  const totalInProgress = (stats?.confirmed || 0) + (stats?.stitching || 0) + 
-                          (stats?.finishing || 0) + (stats?.qualityCheck || 0);
+  const totalInProgress = (stats?.confirmed || 0) + (stats?.stitching || 0) + (stats?.finishing || 0);
 
   return (
     <TailorLayout>
@@ -211,8 +206,8 @@ function TailorDashboard() {
             <span className="qs-label">Need Attention</span>
           </div>
           <div className="quick-stat">
-            <span className="qs-number">{stats?.ready || 0}</span>
-            <span className="qs-label">Ready</span>
+            <span className="qs-number">{stats?.finishing || 0}</span>
+            <span className="qs-label">Finishing</span>
           </div>
           <div className="quick-stat success">
             <span className="qs-number">{stats?.todayUpdates || 0}</span>
@@ -220,7 +215,7 @@ function TailorDashboard() {
           </div>
         </div>
 
-        {/* Workflow Progress */}
+        {/* Workflow Progress - 3 Stages */}
         <div className="workflow-progress">
           <div className="workflow-stage">
             <div className="stage-count">{stats?.confirmed || 0}</div>
@@ -232,19 +227,9 @@ function TailorDashboard() {
             <div className="stage-label">Stitching</div>
           </div>
           <div className="workflow-arrow">→</div>
-          <div className="workflow-stage">
+          <div className="workflow-stage done">
             <div className="stage-count">{stats?.finishing || 0}</div>
             <div className="stage-label">Finishing</div>
-          </div>
-          <div className="workflow-arrow">→</div>
-          <div className="workflow-stage">
-            <div className="stage-count">{stats?.qualityCheck || 0}</div>
-            <div className="stage-label">QC</div>
-          </div>
-          <div className="workflow-arrow">→</div>
-          <div className="workflow-stage done">
-            <div className="stage-count">{stats?.ready || 0}</div>
-            <div className="stage-label">Ready</div>
           </div>
         </div>
 
