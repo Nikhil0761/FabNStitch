@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import TailorLayout from '../components/TailorLayout';
 import './TailorDashboard.css';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config';
 
 function TailorDashboard() {
   const navigate = useNavigate();

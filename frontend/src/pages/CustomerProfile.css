@@ -341,34 +341,90 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .profile-page {
+    padding: 0;
+  }
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .page-header p {
+    font-size: 0.9rem;
+  }
+
+  .profile-card {
+    padding: var(--space-lg);
+  }
+
+  .profile-card.main-card {
+    padding: var(--space-lg);
   }
 
   .profile-header {
     flex-direction: column;
     text-align: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .profile-intro h2 {
+    font-size: 1.25rem;
+  }
+
+  .profile-email {
+    font-size: 0.9rem;
   }
 
   .detail-row {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
   .detail-item.full-width {
     grid-column: span 1;
   }
 
+  .detail-label {
+    font-size: 0.75rem;
+  }
+
+  .detail-value {
+    font-size: 0.95rem;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
   .form-group.full-width {
     grid-column: span 1;
   }
 
+  .form-group input,
+  .form-group textarea {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.95rem;
+  }
+
   .form-actions {
     flex-direction: column;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
   }
 
   .form-actions .btn {
@@ -376,13 +432,56 @@
     justify-content: center;
   }
 
+  .security-card h3 {
+    font-size: 1rem;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    padding: var(--space-sm);
+    align-items: flex-end;
+  }
+
+  .password-modal {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .modal-header {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .modal-body {
+    padding: var(--space-lg);
+  }
+
   .modal-footer {
     flex-direction: column;
+    padding: var(--space-md) var(--space-lg);
   }
 
   .modal-footer .btn {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+
+  .profile-intro h2 {
+    font-size: 1.1rem;
+  }
+
+  .profile-card {
+    padding: var(--space-md);
   }
 }
 

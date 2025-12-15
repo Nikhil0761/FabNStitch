@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import './CustomerSupport.css';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config';
 
 function CustomerSupport() {
   const navigate = useNavigate();

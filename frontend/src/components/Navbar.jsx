@@ -46,9 +46,15 @@ function Navbar() {
           <li><a href="#how-it-works" onClick={closeMenu}>How It Works</a></li>
           <li><a href="#reviews" onClick={closeMenu}>Reviews</a></li>
           <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
+          
+          {/* Mobile-only action buttons inside menu */}
+          <li className="mobile-actions">
+            <Link to="/track" className="btn btn-outline" onClick={closeMenu}>Track Order</Link>
+            <Link to="/login" className="btn btn-primary" onClick={closeMenu}>Login</Link>
+          </li>
         </ul>
 
-        {/* Action Buttons - Use Link for page navigation */}
+        {/* Action Buttons (Desktop only) */}
         <div className="navbar-actions">
           <Link to="/track" className="btn btn-outline">Track Order</Link>
           <Link to="/login" className="btn btn-primary">Login</Link>

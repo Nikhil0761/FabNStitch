@@ -12,7 +12,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import './DashboardLayout.css';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config';
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ function DashboardLayout({ children }) {
   
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const token = localStorage.getItem('token');
@@ -86,6 +87,11 @@ function DashboardLayout({ children }) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [showUserMenu]);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setShowMobileMenu(false);
+  }, [location.pathname]);
+
   if (isLoading) {
     return (
       <div className="dashboard-loading">
@@ -100,6 +106,17 @@ function DashboardLayout({ children }) {
       {/* Dashboard Header */}
       <header className="dashboard-topbar">
         <div className="topbar-left">
+          {/* Mobile Menu Toggle */}
+          <button 
+            className={`mobile-menu-toggle ${showMobileMenu ? 'active' : ''}`}
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          
           <Link to="/" className="dashboard-logo">
             <img src={logo} alt="FabNStitch" />
           </Link>
@@ -162,8 +179,13 @@ function DashboardLayout({ children }) {
         </div>
       </header>
 
+      {/* Mobile Overlay */}
+      {showMobileMenu && (
+        <div className="mobile-overlay" onClick={() => setShowMobileMenu(false)} />
+      )}
+
       {/* Sidebar */}
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar ${showMobileMenu ? 'mobile-open' : ''}`}>
         <div className="sidebar-user">
           <div className="user-avatar">
             {user?.name?.charAt(0).toUpperCase()}

@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import TailorLayout from '../components/TailorLayout';
 import './TailorOrders.css';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config';
 
 function TailorOrders() {
   const navigate = useNavigate();

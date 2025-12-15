@@ -289,29 +289,129 @@
 }
 
 @media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-content {
+    padding: 0;
   }
 
-  .measurements-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .dashboard-header {
+    margin-bottom: var(--space-lg);
   }
 
   .dashboard-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
   }
-}
 
-@media (max-width: 480px) {
+  .dashboard-header p {
+    font-size: 0.9rem;
+  }
+
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
 
   .stat-card {
     padding: var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .stat-number {
+    font-size: 1.35rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .dashboard-grid {
+    gap: var(--space-lg);
+  }
+
+  .dashboard-card {
+    padding: var(--space-lg);
+  }
+
+  .card-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .card-header h2 {
+    font-size: 1rem;
   }
 
   .measurements-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .measurement-item {
+    padding: var(--space-md);
+  }
+
+  .measurement-value {
+    font-size: 1.25rem;
+  }
+
+  .measurement-label {
+    font-size: 0.7rem;
+  }
+
+  .order-item {
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .order-meta {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .stats-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .stat-card {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stat-number {
+    font-size: 1.25rem;
+  }
+
+  .measurements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-card {
+    padding: var(--space-md);
+  }
+
+  .order-id {
+    font-size: 0.9rem;
+  }
+
+  .order-style {
+    font-size: 0.85rem;
   }
 }

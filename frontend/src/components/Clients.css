@@ -57,27 +57,47 @@
 }
 
 @media (max-width: 768px) {
-  .clients-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .clients-header {
+    margin-bottom: var(--space-xl);
+    text-align: center;
   }
 
   .clients-header h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+
+  .clients-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
   }
 
   .client-card {
-    padding: var(--space-lg) var(--space-md);
-    min-height: 80px;
+    padding: var(--space-md);
+    min-height: 70px;
   }
 
   .client-name {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
+  .clients-header h2 {
+    font-size: 1.5rem;
+  }
+
   .clients-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .client-card {
+    padding: var(--space-sm);
+    min-height: 60px;
+  }
+
+  .client-name {
+    font-size: 0.75rem;
   }
 }
 

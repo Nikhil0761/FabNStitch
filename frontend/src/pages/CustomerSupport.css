@@ -464,13 +464,66 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .support-page {
+    padding: 0;
+  }
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .page-header p {
+    font-size: 0.9rem;
+  }
+
+  .quick-help-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .quick-help-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
   }
 
   .help-cards {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .help-card {
+    padding: var(--space-lg);
+  }
+
+  .help-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .help-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .tickets-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .ticket-card {
+    padding: var(--space-md);
+  }
+
+  .ticket-subject {
+    font-size: 0.95rem;
+  }
+
+  .ticket-preview {
+    font-size: 0.85rem;
   }
 
   .ticket-footer {
@@ -484,13 +537,71 @@
     gap: var(--space-md);
   }
 
+  /* Modals */
+  .modal-overlay {
+    padding: var(--space-sm);
+    align-items: flex-end;
+  }
+
+  .ticket-modal,
+  .ticket-detail-modal {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    padding: var(--space-lg);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.95rem;
+  }
+
   .modal-footer {
     flex-direction: column;
+    padding: var(--space-md) var(--space-lg);
   }
 
   .modal-footer .btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .tickets-empty {
+    padding: var(--space-xl);
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .help-card {
+    padding: var(--space-md);
+  }
+
+  .help-icon {
+    font-size: 1.75rem;
+  }
+
+  .ticket-card {
+    padding: var(--space-sm) var(--space-md);
   }
 }
 
