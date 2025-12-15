@@ -77,16 +77,45 @@
 @media (max-width: 1024px) {
   .reviews-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
   }
 }
 
 @media (max-width: 768px) {
-  .reviews-grid {
-    grid-template-columns: 1fr;
+  .reviews-header {
+    margin-bottom: var(--space-xl);
+    text-align: center;
   }
 
   .reviews-header h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+
+  .reviews-subtitle {
+    font-size: 1rem;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .review-card {
+    padding: var(--space-lg);
+  }
+
+  .review-quote {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reviews-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .review-card {
+    padding: var(--space-md);
   }
 }
 

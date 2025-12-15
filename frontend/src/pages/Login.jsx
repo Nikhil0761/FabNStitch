@@ -14,6 +14,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 import logo from '../assets/logo.png';
 import './Login.css';
 
@@ -59,7 +60,7 @@ function Login() {
     
     try {
       // Call backend API
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

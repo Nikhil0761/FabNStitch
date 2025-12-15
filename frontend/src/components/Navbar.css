@@ -106,36 +106,125 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* Mobile Actions - Hidden on desktop */
+.mobile-actions {
+  display: none;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 992px) {
+  .navbar-menu {
+    gap: var(--space-lg);
+  }
+  
+  .navbar-actions .btn {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.8rem;
+  }
+}
+
 /* Responsive - Mobile */
 @media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 var(--space-md);
+  }
+
   .navbar-menu {
     position: fixed;
     top: 70px;
     left: 0;
     right: 0;
+    bottom: 0;
     background: var(--color-white);
     flex-direction: column;
-    padding: var(--space-lg);
-    gap: var(--space-md);
+    padding: var(--space-xl);
+    gap: 0;
     box-shadow: var(--shadow-lg);
-    transform: translateY(-100%);
+    transform: translateX(100%);
     opacity: 0;
     visibility: hidden;
-    transition: all var(--transition-normal);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    z-index: 999;
   }
 
   .navbar-menu.active {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
     visibility: visible;
   }
 
+  .navbar-menu li {
+    width: 100%;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .navbar-menu li:last-child {
+    border-bottom: none;
+  }
+
+  .navbar-menu a {
+    display: block;
+    padding: var(--space-md) 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .navbar-menu a::after {
+    display: none;
+  }
+
+  /* Mobile Actions - Show on mobile */
+  .mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+    margin-top: var(--space-md);
+    border-top: 2px solid #e2e8f0;
+    border-bottom: none !important;
+  }
+
+  .mobile-actions .btn {
+    width: 100%;
+    text-align: center;
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1rem;
+    border-radius: 12px;
+  }
+
+  .mobile-actions .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  }
+
+  .mobile-actions .btn-outline {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  /* Hide desktop actions */
   .navbar-actions {
     display: none;
   }
 
   .navbar-toggle {
     display: flex;
+    z-index: 1001;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .navbar-logo img {
+    height: 32px;
+  }
+
+  .navbar-menu {
+    padding: var(--space-lg);
+  }
+
+  .navbar-menu a {
+    font-size: 1rem;
   }
 }
 
