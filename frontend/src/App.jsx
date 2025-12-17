@@ -22,6 +22,7 @@ import CustomerSupport from './pages/CustomerSupport';
 // Tailor Pages
 import TailorDashboard from './pages/TailorDashboard';
 import TailorOrders from './pages/TailorOrders';
+import TailorProfile from './pages/TailorProfile';
 
 // Import styles
 import './App.css';
@@ -68,6 +69,7 @@ function AppContent() {
           {/* Tailor Dashboard Routes */}
           <Route path="/tailor/dashboard" element={<TailorDashboard />} />
           <Route path="/tailor/orders" element={<TailorOrders />} />
+          <Route path="/tailor/profile" element={<TailorProfile />} />
         </Routes>
       ) : (
         // Regular pages with website navbar/footer

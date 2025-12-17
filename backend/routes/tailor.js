@@ -277,6 +277,42 @@ router.get('/profile', (req, res) => {
   }
 });
 
+// ============================================
+// PUT /api/tailor/profile - Update tailor profile
+// ============================================
+router.put('/profile', (req, res) => {
+  try {
+    const { name, phone, address, city } = req.body;
+
+    // Validate required fields
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    // Update tailor profile
+    db.prepare(`
+      UPDATE users 
+      SET name = ?, phone = ?, address = ?, city = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).run(name.trim(), phone || null, address || null, city || null, req.user.id);
+
+    // Get updated tailor info
+    const tailor = db.prepare(`
+      SELECT id, email, name, phone, address, city, created_at 
+      FROM users WHERE id = ?
+    `).get(req.user.id);
+
+    res.json({ 
+      message: 'Profile updated successfully',
+      tailor 
+    });
+
+  } catch (error) {
+    console.error('Tailor profile update error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
 
 
