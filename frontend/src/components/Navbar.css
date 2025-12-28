@@ -1,16 +1,21 @@
 /* ============================================
-   Navbar Styles
-   ============================================ */
+   NAVBAR BASE
+============================================ */
 
 .navbar {
   position: fixed;
+  font-family: "Inter", system-ui, Arial, Helvetica, sans-serif;
   top: 0;
   left: 0;
   right: 0;
   background: var(--color-white);
   box-shadow: var(--shadow-sm);
   z-index: 1000;
-  padding: var(--space-md) 0;
+  padding: var(--space-lg) 0;
+
+  transition: background 0.3s ease,
+              backdrop-filter 0.3s ease,
+              box-shadow 0.3s ease;
 }
 
 .navbar-container {
@@ -20,13 +25,19 @@
   gap: var(--space-xl);
 }
 
-/* Logo */
+/* ============================================
+   LOGO
+============================================ */
+
 .navbar-logo img {
   height: 40px;
   width: auto;
 }
 
-/* Navigation Menu */
+/* ============================================
+   NAVIGATION MENU (DESKTOP)
+============================================ */
+
 .navbar-menu {
   display: flex;
   align-items: center;
@@ -45,7 +56,7 @@
 }
 
 .navbar-menu a::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -63,7 +74,10 @@
   width: 100%;
 }
 
-/* Action Buttons */
+/* ============================================
+   ACTION BUTTONS (DESKTOP)
+============================================ */
+
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -75,7 +89,10 @@
   font-size: 0.875rem;
 }
 
-/* Mobile Menu Toggle (Hamburger) */
+/* ============================================
+   HAMBURGER TOGGLE
+============================================ */
+
 .navbar-toggle {
   display: none;
   flex-direction: column;
@@ -106,24 +123,33 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Mobile Actions - Hidden on desktop */
+/* ============================================
+   MOBILE ACTIONS (HIDDEN DESKTOP)
+============================================ */
+
 .mobile-actions {
   display: none;
 }
 
-/* Responsive - Tablet */
+/* ============================================
+   TABLET
+============================================ */
+
 @media (max-width: 992px) {
   .navbar-menu {
     gap: var(--space-lg);
   }
-  
+
   .navbar-actions .btn {
     padding: var(--space-xs) var(--space-md);
     font-size: 0.8rem;
   }
 }
 
-/* Responsive - Mobile */
+/* ============================================
+   MOBILE NAVIGATION
+============================================ */
+
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 var(--space-md);
@@ -174,7 +200,7 @@
     display: none;
   }
 
-  /* Mobile Actions - Show on mobile */
+  /* Mobile buttons */
   .mobile-actions {
     display: flex;
     flex-direction: column;
@@ -182,7 +208,6 @@
     padding-top: var(--space-lg);
     margin-top: var(--space-md);
     border-top: 2px solid #e2e8f0;
-    border-bottom: none !important;
   }
 
   .mobile-actions .btn {
@@ -194,7 +219,11 @@
   }
 
   .mobile-actions .btn-primary {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    background: linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-primary-light)
+    );
   }
 
   .mobile-actions .btn-outline {
@@ -202,7 +231,7 @@
     color: var(--color-primary);
   }
 
-  /* Hide desktop actions */
+  /* Hide desktop buttons */
   .navbar-actions {
     display: none;
   }
@@ -213,7 +242,10 @@
   }
 }
 
-/* Small Mobile */
+/* ============================================
+   SMALL MOBILE
+============================================ */
+
 @media (max-width: 480px) {
   .navbar-logo img {
     height: 32px;
@@ -228,3 +260,32 @@
   }
 }
 
+/* ============================================
+   TRANSPARENT NAVBAR ON SCROLL
+============================================ */
+
+.navbar.transparent {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  box-shadow: none;
+}
+
+/* Text visibility when transparent */
+.navbar.transparent .navbar-menu a {
+  color: var(--color-text);
+}
+
+/* Hamburger visibility */
+.navbar.transparent .navbar-toggle span {
+  background: var(--color-primary);
+}
+
+/* ============================================
+   FORCE SOLID WHEN MOBILE MENU IS OPEN
+============================================ */
+
+.navbar.menu-open {
+  background: var(--color-white) !important;
+  backdrop-filter: none !important;
+  box-shadow: var(--shadow-sm);
+}

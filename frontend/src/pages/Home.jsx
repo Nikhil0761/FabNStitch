@@ -1,39 +1,32 @@
-/* ============================================
-   Home Page Component
-   ============================================
-   
-   📚 LEARNING: Page vs Component
-   
-   - Pages are components that represent entire screens
-   - They typically combine multiple smaller components
-   - React Router renders pages based on the URL
-   
-   Section Order:
-   1. Hero - Main banner
-   2. Features - How It Works
-   3. Clients - Our Clients logos
-   4. Reviews - Trusted by Teams
-   5. GetStarted - Contact form
-   6. BookAppointment - CTA before footer
-   
-   ============================================ */
+import { Helmet } from "react-helmet-async";
 
 import Hero from '../components/Hero';
 import Features from '../components/Features';
 import Clients from '../components/Clients';
 import Reviews from '../components/Reviews';
 import GetStarted from '../components/GetStarted';
-import BookAppointment from '../components/BookAppointment';
+import OurStory from '../components/OurStory';
+import OurFacilities from '../components/OurFacilities';
 
 function Home() {
   return (
     <>
+      <Helmet>
+        <title>FabNStitch™ | Premium Uniform Manufacturing for Colleges & Corporates</title>
+        <meta
+          name="description"
+          content="FabNStitch™ manufactures premium uniforms for colleges, corporates, and institutions with custom fit, quality fabric, and precision stitching."
+        />
+        <link rel="canonical" href="https://www.fabnstitch.com/" />
+      </Helmet>
+
       <Hero />
-      <Features />
+      <OurFacilities />
+      <OurStory />
       <Clients />
+      <Features />
       <Reviews />
       <GetStarted />
-      <BookAppointment />
     </>
   );
 }

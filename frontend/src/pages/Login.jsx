@@ -1,254 +1,154 @@
-/* ============================================
-   Login Page Component
-   ============================================
-   
-   📚 LEARNING: React Router & Forms
-   
-   Key concepts:
-   - useNavigate() - programmatic navigation
-   - useState() - managing form inputs
-   - Form handling - controlled components
-   - Link - React Router's anchor tag
-   
-   ============================================ */
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
+import "./Auth.css";
 
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { API_URL } from '../config';
-import logo from '../assets/logo.png';
-import './Login.css';
+// Simple SVG Icons
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05" />
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+  </svg>
+);
+
+const EyeIcon = ({ visible, onClick }) => (
+  <svg
+    onClick={onClick}
+    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="password-toggle"
+  >
+    {visible ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      </>
+    )}
+  </svg>
+);
+
+const ArrowRight = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+    <polyline points="12 5 19 12 12 19"></polyline>
+  </svg>
+);
 
 function Login() {
-  // Navigation hook - allows us to redirect after login
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Form state - stores input values
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-
-  // Error state - for showing validation messages
-  const [error, setError] = useState('');
-
-  // Loading state - for button feedback
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Handle input changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (error) setError('');
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page refresh
-    
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
-      return;
-    }
+    e.preventDefault();
+    setLoading(true);
 
-    setIsLoading(true);
-    setError('');
-    
     try {
-      // Call backend API
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
+      console.log("Login success:", data); // Debugging
 
-      // Store token and user info in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem("fabnstitch_token", data.token);
+      localStorage.setItem("fabnstitch_user", JSON.stringify(data.user));
 
-      // Redirect based on user role
-      if (data.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (data.user.role === 'tailor') {
-        navigate('/tailor/dashboard');
-      } else {
-        navigate('/customer/dashboard');
-      }
-
+      if (data.user.role === "admin") navigate("/admin/dashboard");
+      else if (data.user.role === "tailor") navigate("/tailor/dashboard");
+      else navigate("/customer/dashboard");
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      console.error("Login error:", err);
+      setError(err.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      {/* Left side - Decorative */}
-      <div className="auth-visual">
-        <div className="auth-visual-content">
-          <Link to="/" className="auth-logo">
-            <img src={logo} alt="FabNStitch" />
-          </Link>
-          <div className="auth-visual-text">
-            <h2>Welcome Back!</h2>
-            <p>
-              Sign in to track your orders, view your measurements, 
-              and access exclusive features.
-            </p>
-          </div>
-          <div className="auth-features">
-            <div className="auth-feature">
-              <span className="feature-icon">📦</span>
-              <span>Track Your Orders</span>
-            </div>
-            <div className="auth-feature">
-              <span className="feature-icon">📏</span>
-              <span>View Measurements</span>
-            </div>
-            <div className="auth-feature">
-              <span className="feature-icon">⭐</span>
-              <span>Write Reviews</span>
-            </div>
-          </div>
+    <div className="auth-container">
+      {/* Left Panel: Sign In Form */}
+      <div className="auth-panel dark">
+        <h1 className="auth-title">Sign In</h1>
+
+        <button className="btn-google">
+          <GoogleIcon />
+          Continue with Google
+        </button>
+
+        <div className="divider">
+          <span>or continue with email</span>
         </div>
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          {error && <p style={{ color: "#ff6b6b", fontSize: "0.9rem", textAlign: "center", margin: 0 }}>{error}</p>}
+
+          <div className="input-group">
+            <label className="input-label">Email Address</label>
+            <input
+              className="auth-input"
+              name="email"
+              placeholder="you@company.com"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Password</label>
+            <input
+              className="auth-input"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              onChange={handleChange}
+              required
+            />
+            <EyeIcon visible={showPassword} onClick={() => setShowPassword(!showPassword)} />
+          </div>
+
+          <Link to="/forgot-password" className="forgot-password">Forgot your password?</Link>
+
+          <button className="btn-primary" disabled={loading}>
+            {loading ? "Signing In..." : "Sign In"}
+            {!loading && <ArrowRight />}
+          </button>
+        </form>
       </div>
 
-      {/* Right side - Form */}
-      <div className="auth-form-container">
-        <div className="auth-form-wrapper">
-          {/* Mobile logo (hidden on desktop) */}
-          <Link to="/" className="auth-logo-mobile">
-            <img src={logo} alt="FabNStitch" />
-          </Link>
+      {/* Right Panel: Sign Up Promo */}
+      <div className="auth-panel light">
+        <div className="circle-decoration c1"></div>
+        <div className="circle-decoration c2"></div>
+        <div className="circle-decoration c3"></div>
 
-          <div className="auth-header">
-            <h1>Sign In</h1>
-            <p>Enter your credentials to access your account</p>
-          </div>
+        <h1 className="auth-title" style={{ fontFamily: 'Playfair Display, serif' }}>Hey There!</h1>
+        <p className="auth-subtitle">
+          Begin an amazing journey by creating an account with us today
+        </p>
 
-          {/* Error Message */}
-          {error && (
-            <div className="alert alert-error">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="15" y1="9" x2="9" y2="15"/>
-                <line x1="9" y1="9" x2="15" y2="15"/>
-              </svg>
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="form-group">
-              <label htmlFor="email">Email or User ID</label>
-              <div className="input-wrapper">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <input
-                  type="text"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email or user ID"
-                  value={formData.email}
-                  onChange={handleChange}
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <div className="input-wrapper">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="current-password"
-                />
-              </div>
-            </div>
-
-            <div className="form-options">
-              <label className="checkbox-wrapper">
-                <input type="checkbox" />
-                <span className="checkmark"></span>
-                <span>Remember me</span>
-              </label>
-              <Link to="/forgot-password" className="forgot-link">
-                Forgot password?
-              </Link>
-            </div>
-
-            <button 
-              type="submit" 
-              className={`btn btn-primary btn-block ${isLoading ? 'loading' : ''}`}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="spinner"></span>
-                  Signing in...
-                </>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="auth-divider">
-            <span>or continue with</span>
-          </div>
-
-          {/* OTP Login Option */}
-          <button className="btn btn-outline btn-block btn-otp">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-            Login with Mobile OTP
-          </button>
-
-          {/* Sign Up Link */}
-          <div className="auth-footer">
-            <p>
-              Don't have an account?{' '}
-              <Link to="/register">Contact Admin</Link>
-            </p>
-            <p className="auth-note">
-              * Accounts are created by admin during home visits
-            </p>
-          </div>
-        </div>
+        <Link to="/register" className="btn-outline">
+          Sign Up
+        </Link>
       </div>
     </div>
   );
 }
 
 export default Login;
-

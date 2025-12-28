@@ -3,7 +3,10 @@
    ============================================ */
 
 .get-started {
-  background: var(--color-bg-alt);
+  background: linear-gradient(180deg, #eef4ff 0%, #f7faff 100%);
+  box-shadow:
+    0 20px 40px rgba(77, 127, 233, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
 .get-started-grid {
@@ -110,7 +113,7 @@
   text-align: center;
   margin-top: var(--space-lg);
   margin-bottom: 0;
-  color: var(--color-accent);
+  color: green;
   font-size: 0.9rem;
   font-style: italic;
 }
