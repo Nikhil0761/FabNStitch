@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import "./Auth.css";
 
+
 // Simple SVG Icons
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,9 +71,14 @@ function Login() {
       localStorage.setItem("fabnstitch_token", data.token);
       localStorage.setItem("fabnstitch_user", JSON.stringify(data.user));
 
-      if (data.user.role === "admin") navigate("/admin/dashboard");
-      else if (data.user.role === "tailor") navigate("/tailor/dashboard");
-      else navigate("/customer/dashboard");
+if (data.user.role === "admin") {
+  navigate("/admin/create-order");
+} else if (data.user.role === "customer") {
+  navigate("/customer/dashboard");
+} else if (data.user.role === "tailor") {
+  navigate("/tailor/dashboard");
+}
+
     } catch (err) {
       console.error("Login error:", err);
       setError(err.message);
@@ -146,6 +152,10 @@ function Login() {
         <Link to="/register" className="btn-outline">
           Sign Up
         </Link>
+<Link to="/admin" className="btn-outline">
+  Admin
+</Link>
+
       </div>
     </div>
   );
