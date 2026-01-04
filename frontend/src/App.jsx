@@ -22,12 +22,9 @@ import CustomerProfile from "./pages/CustomerProfile";
 import CustomerSupport from "./pages/CustomerSupport";
 
 // Tailor Pages
-import TailorDashboard from "./pages/TailorDashboard";
-import TailorOrders from "./pages/TailorOrders";
-import TailorProfile from "./pages/TailorProfile";
-
-// Admin Pages
-
+import TailorDashboard from './pages/TailorDashboard';
+import TailorOrders from './pages/TailorOrders';
+import TailorProfile from './pages/TailorProfile';
 
 import "./App.css";
 
@@ -71,14 +68,16 @@ function AppContent() {
       {/* ========== ADMIN DASHBOARD ========== */}
       {isAdmin && (
         <Routes>
-          <Route
-            path="/admin/create-order"
-            element={
-              <ProtectedRoute roles={["admin"]}>
-                <AdminCreateOrder />
-              </ProtectedRoute>
-            }
-          />
+          {/* Customer Dashboard Routes */}
+          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+          <Route path="/customer/orders" element={<CustomerOrders />} />
+          <Route path="/customer/profile" element={<CustomerProfile />} />
+          <Route path="/customer/support" element={<CustomerSupport />} />
+          
+          {/* Tailor Dashboard Routes */}
+          <Route path="/tailor/dashboard" element={<TailorDashboard />} />
+          <Route path="/tailor/orders" element={<TailorOrders />} />
+          <Route path="/tailor/profile" element={<TailorProfile />} />
         </Routes>
       )}
 

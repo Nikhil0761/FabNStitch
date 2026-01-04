@@ -1,0 +1,630 @@
+/* ============================================
+   Tailor Profile Page Styles
+   ============================================ */
+
+.tailor-profile-page {
+  max-width: 1100px;
+}
+
+/* Loading State */
+.tailor-profile-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1.5rem;
+}
+
+.tailor-profile-loading .loader {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Page Header */
+.tailor-profile-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tailor-profile-page .header-text h1 {
+  font-size: 1.75rem;
+  color: #1e1b4b;
+  margin-bottom: 0.25rem;
+}
+
+.tailor-profile-page .header-text p {
+  color: #64748b;
+  margin: 0;
+}
+
+.tailor-profile-page .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.tailor-profile-page .btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.tailor-profile-page .btn-primary:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.tailor-profile-page .btn-outline {
+  background: white;
+  color: #6366f1;
+  border: 2px solid #e2e8f0;
+}
+
+.tailor-profile-page .btn-outline:hover {
+  border-color: #6366f1;
+  background: #f8fafc;
+}
+
+/* Message Banner */
+.tailor-profile-page .message-banner {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.tailor-profile-page .message-banner.success {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.tailor-profile-page .message-banner.error {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* Profile Content - Two Column Layout */
+.tailor-profile-page .profile-content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+}
+
+/* Profile Card */
+.tailor-profile-page .profile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tailor-profile-page .profile-card.main-card {
+  padding: 2rem;
+}
+
+/* Profile Header */
+.tailor-profile-page .profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tailor-profile-page .profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.tailor-profile-page .profile-intro h2 {
+  font-size: 1.5rem;
+  color: #1e1b4b;
+  margin-bottom: 0.25rem;
+}
+
+.tailor-profile-page .profile-email {
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.tailor-profile-page .profile-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tailor-profile-page .role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tailor-profile-page .member-since {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Profile Details */
+.tailor-profile-page .profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tailor-profile-page .detail-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.tailor-profile-page .detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tailor-profile-page .detail-item.full-width {
+  grid-column: span 2;
+}
+
+.tailor-profile-page .detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tailor-profile-page .detail-label svg {
+  color: #6366f1;
+}
+
+.tailor-profile-page .detail-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1e1b4b;
+}
+
+/* Profile Form */
+.tailor-profile-page .profile-form {
+  margin-top: 1rem;
+}
+
+.tailor-profile-page .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.tailor-profile-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tailor-profile-page .form-group.full-width {
+  grid-column: span 2;
+}
+
+.tailor-profile-page .form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e1b4b;
+}
+
+.tailor-profile-page .form-group input,
+.tailor-profile-page .form-group textarea {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+
+.tailor-profile-page .form-group input:focus,
+.tailor-profile-page .form-group textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.tailor-profile-page .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.tailor-profile-page .input-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.tailor-profile-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Sidebar */
+.tailor-profile-page .profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Stats Card */
+.tailor-profile-page .stats-card {
+  overflow: hidden;
+}
+
+.tailor-profile-page .stats-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #1e1b4b;
+  margin-bottom: 1rem;
+}
+
+.tailor-profile-page .stats-card h3 svg {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.tailor-profile-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.tailor-profile-page .stat-item {
+  text-align: center;
+  padding: 0.875rem 0.5rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tailor-profile-page .stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #6366f1;
+  line-height: 1.2;
+}
+
+.tailor-profile-page .stat-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  margin-top: 0.25rem;
+  word-wrap: break-word;
+}
+
+/* Security Card */
+.tailor-profile-page .security-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #1e1b4b;
+  margin-bottom: 0.75rem;
+}
+
+.tailor-profile-page .security-card h3 svg {
+  color: #6366f1;
+}
+
+.tailor-profile-page .security-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Password Modal */
+.tailor-profile-page .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 27, 75, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.tailor-profile-page .password-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 450px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.tailor-profile-page .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+}
+
+.tailor-profile-page .modal-header h2 {
+  font-size: 1.25rem;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.tailor-profile-page .modal-close {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.tailor-profile-page .modal-close:hover {
+  background: #e2e8f0;
+  color: #1e1b4b;
+}
+
+.tailor-profile-page .modal-body {
+  padding: 1.5rem;
+}
+
+.tailor-profile-page .modal-body .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.tailor-profile-page .modal-body .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.tailor-profile-page .password-error {
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.tailor-profile-page .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .tailor-profile-page .profile-content {
+    grid-template-columns: 1fr;
+  }
+
+  .tailor-profile-page .profile-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tailor-profile-page {
+    padding: 0;
+  }
+
+  .tailor-profile-page .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .tailor-profile-page .header-text h1 {
+    font-size: 1.35rem;
+  }
+
+  .tailor-profile-page .header-text p {
+    font-size: 0.9rem;
+  }
+
+  .tailor-profile-page .profile-card {
+    padding: 1.25rem;
+  }
+
+  .tailor-profile-page .profile-card.main-card {
+    padding: 1.25rem;
+  }
+
+  .tailor-profile-page .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .tailor-profile-page .profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .tailor-profile-page .profile-intro h2 {
+    font-size: 1.25rem;
+  }
+
+  .tailor-profile-page .profile-badges {
+    justify-content: center;
+  }
+
+  .tailor-profile-page .detail-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tailor-profile-page .detail-item.full-width {
+    grid-column: span 1;
+  }
+
+  .tailor-profile-page .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tailor-profile-page .form-group.full-width {
+    grid-column: span 1;
+  }
+
+  .tailor-profile-page .form-group input,
+  .tailor-profile-page .form-group textarea {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .tailor-profile-page .form-actions {
+    flex-direction: column;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+
+  .tailor-profile-page .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tailor-profile-page .profile-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modal */
+  .tailor-profile-page .modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .tailor-profile-page .password-modal {
+    border-radius: 16px 16px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .tailor-profile-page .modal-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .tailor-profile-page .modal-body {
+    padding: 1.25rem;
+  }
+
+  .tailor-profile-page .modal-footer {
+    flex-direction: column;
+    padding: 1rem 1.25rem;
+  }
+
+  .tailor-profile-page .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .tailor-profile-page .header-text h1 {
+    font-size: 1.25rem;
+  }
+
+  .tailor-profile-page .profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+
+  .tailor-profile-page .profile-intro h2 {
+    font-size: 1.1rem;
+  }
+
+  .tailor-profile-page .profile-card {
+    padding: 1rem;
+  }
+
+  .tailor-profile-page .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tailor-profile-page .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .tailor-profile-page .stat-label {
+    font-size: 0.7rem;
+  }
+}
+

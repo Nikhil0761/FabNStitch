@@ -220,14 +220,17 @@ body {
 
   .hero-container {
     grid-template-columns: 1fr;
-    min-height: 100vh;
+    text-align: center;
+    gap: var(--space-xl);
   }
 
-  /* BACKGROUND IMAGE */
-  .hero-visual {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  .hero-content {
+    max-width: 100%;
+    order: 1;
+  }
+
+  .hero h1 {
+    font-size: 2.75rem;
   }
 
   .hero-image-wrapper {
@@ -242,15 +245,18 @@ body {
     object-fit: cover;
   }
 
-  .hero-image-wrapper::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.65),
-      rgba(0,0,0,0.55)
-    );
+  .hero-visual {
+    order: 2;
+    margin-top: var(--space-lg);
+  }
+
+  .hero-image-wrapper {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
+  .floating-card {
+    display: none;
   }
 
   /* CONTENT ABOVE IMAGE */
@@ -288,8 +294,39 @@ body {
     margin: auto;
   }
 
-  .hero-email-box input {
-    width: 100%;
+  .hero-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    justify-content: center;
+  }
+
+  .stat {
+    align-items: center;
+    min-width: 80px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .hero-image-wrapper {
+    max-width: 280px;
+    aspect-ratio: 4/5;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 70px;
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
   }
 
   /* REVIEWS */
@@ -307,5 +344,9 @@ body {
   /* HIDE FLOATING CARDS */
   .floating-card {
     display: none;
+  }
+
+  .hero-image-wrapper {
+    max-width: 240px;
   }
 }
