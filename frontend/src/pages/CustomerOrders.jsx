@@ -11,7 +11,8 @@ import { API_URL } from '../config';
 
 function CustomerOrders() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('fabnstitch_token');
+
   
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +67,8 @@ function CustomerOrders() {
       }
 
       const data = await response.json();
-      setOrders(data.orders || []);
+console.log("Orders API response:", data);
+setOrders(data.orders || []);
     } catch (err) {
       console.error('Orders error:', err);
       setError('Failed to load orders');
@@ -147,7 +149,8 @@ function CustomerOrders() {
             <h1>My Orders</h1>
             <p>View and track all your orders</p>
           </div>
-          <Link to="/#get-started" className="btn btn-primary">
+          <Link to="/customer/new-order" className="btn btn-primary">
+
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
@@ -207,10 +210,13 @@ function CustomerOrders() {
                 
                 <div className="order-card-body">
                   <h3 className="order-style">{order.style}</h3>
-                  <p className="order-fabric">
-                    <span className="fabric-color" style={{ background: order.fabric_color?.toLowerCase() }}></span>
-                    {order.fabric_name} - {order.fabric_color}
-                  </p>
+                  {order.fabric_name && (
+  <p className="order-fabric">
+    {order.fabric_name}
+    {order.fabric_color && ` - ${order.fabric_color}`}
+  </p>
+)}
+
                   {order.fabric_material && (
                     <p className="order-material">{order.fabric_material}</p>
                   )}
@@ -373,4 +379,3 @@ function CustomerOrders() {
 }
 
 export default CustomerOrders;
-

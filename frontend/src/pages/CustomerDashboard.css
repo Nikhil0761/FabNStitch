@@ -415,3 +415,46 @@
     font-size: 0.85rem;
   }
 }
+.place-order-card {
+  margin-top: var(--space-xl);
+}
+
+.place-order-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.order-price-preview {
+  grid-column: span 2;
+  font-size: 1rem;
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .place-order-form {
+    grid-template-columns: 1fr;
+  }
+
+  .order-price-preview {
+    grid-column: span 1;
+  }
+}

@@ -1,33 +1,35 @@
-/* ============================================
-   App.jsx - Main Application Component
-   ============================================ */
-
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Layout Components
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-// Page Components
-import Home from './pages/Home';
-import Login from './pages/Login';
-import TrackOrder from './pages/TrackOrder';
+// Auth Pages
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminLogin from "./pages/AdminLogin";
+
+// Public Pages
+import Home from "./pages/Home";
+import TrackOrder from "./pages/TrackOrder";
+import Fabrics from "./components/Fabrics";
 
 // Customer Pages
-import CustomerDashboard from './pages/CustomerDashboard';
-import CustomerOrders from './pages/CustomerOrders';
-import CustomerProfile from './pages/CustomerProfile';
-import CustomerSupport from './pages/CustomerSupport';
+import CustomerDashboard from "./pages/CustomerDashboard";
+import CustomerOrders from "./pages/CustomerOrders";
+import CustomerProfile from "./pages/CustomerProfile";
+import CustomerSupport from "./pages/CustomerSupport";
 
 // Tailor Pages
 import TailorDashboard from './pages/TailorDashboard';
 import TailorOrders from './pages/TailorOrders';
 import TailorProfile from './pages/TailorProfile';
 
-// Import styles
-import './App.css';
+import "./App.css";
 
-// Layout wrapper - shows Navbar and Footer on most pages
+/* ================= Layout ================= */
+
 function Layout({ children }) {
   return (
     <div className="app">
@@ -38,27 +40,33 @@ function Layout({ children }) {
   );
 }
 
-// App Content - Handles routing
+/* ================= App Content ================= */
+
 function AppContent() {
   const location = useLocation();
-  
-  // Pages that don't need any layout wrapper
-  const noLayoutPages = ['/login', '/register'];
+
+  // Pages WITHOUT Navbar/Footer
+  const noLayoutPages = ["/login", "/register", "/admin"];
   const isNoLayout = noLayoutPages.includes(location.pathname);
-  
-  // Dashboard pages - have their own layout (no website navbar/footer)
-  const dashboardPages = ['/customer', '/tailor'];
-  const isDashboard = dashboardPages.some(path => location.pathname.startsWith(path));
+
+  // Dashboard paths
+  const isCustomer = location.pathname.startsWith("/customer");
+  const isTailor = location.pathname.startsWith("/tailor");
+  const isAdmin = location.pathname.startsWith("/admin/create-order");
 
   return (
     <>
-      {isNoLayout ? (
-        // Auth pages - completely standalone
+      {/* ========== AUTH PAGES (NO LAYOUT) ========== */}
+      {isNoLayout && (
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={<AdminLogin />} />
         </Routes>
-      ) : isDashboard ? (
-        // Dashboard pages - have their own header/sidebar built-in
+      )}
+
+      {/* ========== ADMIN DASHBOARD ========== */}
+      {isAdmin && (
         <Routes>
           {/* Customer Dashboard Routes */}
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
@@ -71,12 +79,93 @@ function AppContent() {
           <Route path="/tailor/orders" element={<TailorOrders />} />
           <Route path="/tailor/profile" element={<TailorProfile />} />
         </Routes>
-      ) : (
-        // Regular pages with website navbar/footer
+      )}
+
+      {/* ========== CUSTOMER DASHBOARD ========== */}
+      {isCustomer && (
+        <Routes>
+          <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
+
+          <Route
+            path="/customer/dashboard"
+            element={
+              <ProtectedRoute roles={["customer"]}>
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/orders"
+            element={
+              <ProtectedRoute roles={["customer"]}>
+                <CustomerOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/profile"
+            element={
+              <ProtectedRoute roles={["customer"]}>
+                <CustomerProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/support"
+            element={
+              <ProtectedRoute roles={["customer"]}>
+                <CustomerSupport />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
+
+      {/* ========== TAILOR DASHBOARD ========== */}
+      {isTailor && (
+        <Routes>
+          <Route path="/tailor" element={<Navigate to="/tailor/dashboard" replace />} />
+
+          <Route
+            path="/tailor/dashboard"
+            element={
+              <ProtectedRoute roles={["tailor"]}>
+                <TailorDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/tailor/orders"
+            element={
+              <ProtectedRoute roles={["tailor"]}>
+                <TailorOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/tailor/profile"
+            element={
+              <ProtectedRoute roles={["tailor"]}>
+                <TailorProfile />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
+
+      {/* ========== PUBLIC WEBSITE ========== */}
+      {!isNoLayout && !isCustomer && !isTailor && !isAdmin && (
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/fabrics" element={<Fabrics />} />
             <Route path="/track" element={<TrackOrder />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
       )}
@@ -84,12 +173,12 @@ function AppContent() {
   );
 }
 
-function App() {
+/* ================= Root ================= */
+
+export default function App() {
   return (
     <BrowserRouter>
       <AppContent />
     </BrowserRouter>
   );
 }
-
-export default App;

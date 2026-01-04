@@ -1,40 +1,33 @@
-/* ============================================
-   Clients Component - Our Clients Section
-   ============================================ */
+import "./Clients.css";
 
-import './Clients.css';
+import clientLogo1 from "../assets/Client1.png";
+import clientLogo2 from "../assets/Client2.png";
+import clientLogo3 from "../assets/Client3.jpg";
+import clientLogo4 from "../assets/Client4.jpg";
+import clientLogo5 from "../assets/Client5.jpg";
+import clientLogo6 from "../assets/Client6.png";
 
 function Clients() {
-  // Client names - using text placeholders (replace with actual logos later)
-  const clients = [
-    'Colgate-Palmolive',
-    'Jubilant',
-    'Themis Medicare',
-    'Metro',
-    'Britannia',
-    'NYK Group',
-    'Chanel',
-    'Big Bazaar',
-    'L&T',
-    'Sugar',
-    'Akasa Air',
-    'Castrol',
-    'DHL',
-    'Colors TV',
-    'Dettol',
+  const logos = [
+    clientLogo1,
+    clientLogo2,
+    clientLogo3,
+    clientLogo4,
+    clientLogo5,
+    clientLogo6,
   ];
 
   return (
-    <section className="clients section" id="clients">
-      <div className="container">
-        <div className="clients-header text-center">
-          <h2>Our Clients</h2>
-        </div>
+    <section className="clients-section" id="clients">
+      <h2 className="clients-title">Our Clients</h2>
 
-        <div className="clients-grid">
-          {clients.map((client, index) => (
-            <div className="client-card" key={index}>
-              <span className="client-name">{client}</span>
+      {/* Auto-scroll wrapper */}
+      <div className="clients-wrapper">
+        <div className="clients-track">
+          {/* Duplicate logos for infinite loop */}
+          {logos.concat(logos).map((logo, index) => (
+            <div className="client-item" key={index}>
+              <img src={logo} alt={`Client ${index + 1}`} />
             </div>
           ))}
         </div>
@@ -44,4 +37,3 @@ function Clients() {
 }
 
 export default Clients;
-

@@ -1,0 +1,251 @@
+/* =========================================
+   Our Facilities – Premium Floating Cards
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+
+.facilities-wrapper {
+  background: #ffffff;
+  padding: 60px 24px 60px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* GRID */
+.facilities-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
+}
+
+/* CARD */
+.facility-card {
+  background: #ffffff;
+  border-radius: 22px;
+ padding: 18px 24px 32px;
+
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
+  position: relative;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.facility-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 50px rgba(0, 0, 0, 0.12);
+}
+
+/* FIXED IMAGE ZONE */
+.facility-image {
+  position: absolute;
+  top: -75px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 170px; /* 🔥 lock image area */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+}
+
+.facility-image img {
+  width: 170px;
+  max-height: 190px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.25));
+}
+
+/* CONTENT */
+.facility-content {
+  margin-top: 80px;
+}
+
+.facility-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin-bottom: 14px;
+}
+
+/* TAGS */
+.facility-tags {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tag {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  background: #f2f2f2;
+  color: #333;
+}
+
+/* DESCRIPTION */
+.facility-desc {
+  font-size: 13px;
+  color: #000000;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+/* FOOTER */
+.facility-footer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+}
+
+.facility-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+/* BUTTON */
+.facility-btn {
+  background: #c9e63a;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e1e1e;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.facility-btn:hover {
+  background: #b6d631;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+/* TABLET */
+@media (max-width: 1024px) {
+  .facilities-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+
+  .facility-image {
+    height: 155px;
+  }
+
+  .facility-image img {
+    width: 155px;
+    max-height: 155px;
+  }
+
+  .facility-content {
+    margin-top: 120px;
+  }
+}
+
+/* MOBILE (2 cards per row) */
+@media (max-width: 768px) {
+  .facilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .facility-card {
+    padding: 16px 14px 18px;
+    border-radius: 18px;
+  }
+
+  .facility-image {
+    top: -55px;
+    height: 145px;
+  }
+
+  .facility-image img {
+    width: 150px;
+    max-height: 145px;
+  }
+
+  .facility-content {
+    margin-top: 80px;
+  }
+
+  .facility-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .facility-desc {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .facility-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .facility-btn {
+    width: 100%;
+    padding: 9px 0;
+    font-size: 13px;
+  }
+}
+
+/* SMALL PHONES */
+@media (max-width: 360px) {
+  .facilities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .facility-image {
+    top: -40px;
+    height: 155px;
+  }
+
+  .facility-image img {
+    width: 165px;
+    max-height: 155px;
+  }
+
+  .facility-content {
+    margin-top: 130px;
+  }
+}
+.facility-actions-tags {
+  display: flex;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+/* Plain text tag */
+.action-tag {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* Optional subtle hover */
+.action-tag:hover {
+  text-decoration: underline;
+}

@@ -17,13 +17,13 @@ import { API_URL } from '../config';
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('fabnstitch_token');
 
   // Determine active tab from URL
   const getActiveTab = () => {
@@ -54,7 +54,7 @@ function DashboardLayout({ children }) {
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem('token');
+          localStorage.removeItem('fabnstitch_token');
           navigate('/login');
           return;
         }
@@ -71,8 +71,8 @@ function DashboardLayout({ children }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('fabnstitch_token');
+    localStorage.removeItem('fabnstitch_user');
     navigate('/login');
   };
 
@@ -107,7 +107,7 @@ function DashboardLayout({ children }) {
       <header className="dashboard-topbar">
         <div className="topbar-left">
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className={`mobile-menu-toggle ${showMobileMenu ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(!showMobileMenu)}
             aria-label="Toggle menu"
@@ -116,21 +116,21 @@ function DashboardLayout({ children }) {
             <span></span>
             <span></span>
           </button>
-          
+
           <Link to="/" className="dashboard-logo">
             <img src={logo} alt="FabNStitch" />
           </Link>
           <Link to="/" className="back-to-site">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
             <span>Back to Website</span>
           </Link>
         </div>
-        
+
         <div className="topbar-right">
           <div className="user-menu-wrapper">
-            <button 
+            <button
               className="user-menu-trigger"
               onClick={() => setShowUserMenu(!showUserMenu)}
             >
@@ -139,10 +139,10 @@ function DashboardLayout({ children }) {
               </div>
               <span className="user-name-topbar">{user?.name?.split(' ')[0]}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 9l6 6 6-6"/>
+                <path d="M6 9l6 6 6-6" />
               </svg>
             </button>
-            
+
             {showUserMenu && (
               <div className="user-dropdown">
                 <div className="dropdown-header">
@@ -152,24 +152,24 @@ function DashboardLayout({ children }) {
                 <div className="dropdown-divider"></div>
                 <Link to="/customer/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
                   My Profile
                 </Link>
                 <Link to="/track" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
                   </svg>
                   Track Order
                 </Link>
                 <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                   Logout
                 </button>
@@ -197,38 +197,38 @@ function DashboardLayout({ children }) {
         <nav className="sidebar-nav">
           <Link to="/customer/dashboard" className={`sidebar-link ${activeTab === 'dashboard' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="7" height="7"/>
-              <rect x="14" y="3" width="7" height="7"/>
-              <rect x="14" y="14" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
             </svg>
             Dashboard
           </Link>
           <Link to="/customer/orders" className={`sidebar-link ${activeTab === 'orders' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
             </svg>
             My Orders
           </Link>
           <Link to="/customer/profile" className={`sidebar-link ${activeTab === 'profile' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
             Profile
           </Link>
           <Link to="/customer/support" className={`sidebar-link ${activeTab === 'support' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             Support
           </Link>
           <button onClick={handleLogout} className="sidebar-link logout-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
             Logout
           </button>
