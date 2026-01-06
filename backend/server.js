@@ -60,6 +60,23 @@ app.use((req, res, next) => {
 // ROUTES
 // ============================================
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'FabNStitch API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      customer: '/api/customer',
+      tailor: '/api/tailor',
+      orders: '/api/orders'
+    },
+    documentation: 'API routes are prefixed with /api'
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'FabNStitch API is running!' });
@@ -83,7 +100,19 @@ app.use('/api/orders', orderRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  console.error(`404 - Route not found: ${req.method} ${req.path}`);
+  res.status(404).json({ 
+    error: 'Route not found',
+    method: req.method,
+    path: req.path,
+    availableRoutes: {
+      auth: ['/api/auth/login', '/api/auth/register', '/api/auth/me', '/api/auth/password'],
+      customer: ['/api/customer/dashboard', '/api/customer/profile', '/api/customer/orders', '/api/customer/measurements', '/api/customer/tickets'],
+      tailor: ['/api/tailor/dashboard', '/api/tailor/orders', '/api/tailor/orders/:id', '/api/tailor/orders/:id/status', '/api/tailor/profile'],
+      orders: ['/api/orders/track/:orderId'],
+      health: ['/api/health']
+    }
+  });
 });
 
 // Global error handler
