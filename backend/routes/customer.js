@@ -82,21 +82,25 @@ router.get("/dashboard", (req, res) => {
    CUSTOMER ORDERS
    GET /api/customer/orders
 ============================================ */
-router.get(
-  "/customer/orders",
-  authenticateToken,
-  authorizeRoles("customer"),
-  (req, res) => {
-    const orders = db.prepare(`
-      SELECT *
-      FROM orders
-      WHERE user_id = ?
-      ORDER BY created_at DESC
-    `).all(req.user.id);
-
-    res.json({ orders });
-  }
-);
+router.get("/orders", (req, res) => {
+  db.query(
+    `
+    SELECT 
+      o.*,
+      f.name AS fabric_table_name,
+      f.color AS fabric_table_color
+    FROM orders o
+    LEFT JOIN fabrics f ON o.fabric_id = f.id
+    WHERE o.user_id = ?
+    ORDER BY o.created_at DESC
+    `,
+    [req.user.id],
+    (err, orders) => {
+      if (err) return res.status(500).json({ error: "Orders fetch error" });
+      res.json({ orders });
+    }
+  );
+});
 
 /* ============================================
    ORDER DETAILS + TIMELINE
@@ -227,7 +231,7 @@ router.get("/tickets", (req, res) => {
   db.query(
     `
     SELECT *
-    FROM support_tickets
+    FROM tickets
     WHERE user_id = ?
     ORDER BY created_at DESC
     `,
@@ -260,7 +264,7 @@ router.post(
 
     db.query(
       `
-      INSERT INTO support_tickets (user_id, subject, message, priority)
+      INSERT INTO tickets (user_id, subject, message, priority)
       VALUES (?, ?, ?, ?)
       `,
       [req.user.id, subject, message, priority],
@@ -271,7 +275,7 @@ router.post(
             .json({ error: "Ticket creation failed" });
 
         db.query(
-          "SELECT * FROM support_tickets WHERE id = ?",
+          "SELECT * FROM tickets WHERE id = ?",
           [result.insertId],
           (err, tickets) => {
             if (err)

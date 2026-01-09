@@ -3,8 +3,8 @@ import "./Features.css";
 // Import images
 import step1Img from "../assets/MW.jpeg";
 import step2Img from "../assets/WT.png";
-import step3Img from "../assets/Pf.jpeg";
-import step4Img from "../assets/s.jpeg";
+import step3Img from "../assets/PF.jpeg";
+import step4Img from "../assets/S.jpeg";
 import step5Img from "../assets/QC.jpeg";
 import step6Img from "../assets/T.jpeg";
 

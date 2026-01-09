@@ -12,6 +12,8 @@ import authRoutes from "./routes/auth.js";
 import customerRoutes from "./routes/customer.js";
 import tailorRoutes from "./routes/tailor.js";
 import orderRoutes from "./routes/orders.js";
+import adminRoutes from "./routes/admin.js";
+import leadsRoutes from "./routes/leads.js";
 
 import { initializeDatabase } from "./database/init.js";
 
@@ -22,15 +24,25 @@ const app = express();
    MIDDLEWARE
 ============================================ */
 
+// CORS Configuration - Update with your production URLs
+const allowedOrigins = [
+    "http://localhost:5173",      // Local development
+    "http://localhost:5174",      // Alternate local port
+    "http://localhost:3000",      // Alternate local port
+    "https://fabnstitch.com",     // Production domain (if you have one)
+    "https://www.fabnstitch.com", // Production www domain
+    // Add your Render frontend URL here after deployment:
+    // "https://your-frontend-name.onrender.com"
+];
+
+// If FRONTEND_URL environment variable is set, add it to allowed origins
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
     cors({
-        origin: [
-            "https://fabnstitch.com",
-            "https://www.fabnstitch.com",
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "http://localhost:3000"
-        ],
+        origin: allowedOrigins,
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -59,6 +71,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/tailor", tailorRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/leads", leadsRoutes);
 
 /* ============================================
    ERROR HANDLING

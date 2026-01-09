@@ -1,5 +1,5 @@
 import "./Hero.css";
-import blazerImage from "../assets/blazer_collection1.png";
+import blazerImage from "../assets/Blazer_collection1.png";
 export default function Hero() {
   return (
             <section className="hero">

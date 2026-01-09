@@ -170,10 +170,10 @@ router.put("/orders/:orderId/status", (req, res) => {
         (err) => {
           if (err) return res.status(500).json({ error: "Update failed" });
 
-          // 3. Add history entry
+          // 3. Add history entry with updated_by
           db.query(
-            "INSERT INTO order_status_history (order_id, status, notes) VALUES (?, ?, ?)",
-            [order.id, status, notes || `Status updated to ${status}`],
+            "INSERT INTO order_status_history (order_id, status, notes, updated_by) VALUES (?, ?, ?, ?)",
+            [order.id, status, notes || `Status updated to ${status}`, req.user.id],
             (err) => {
               if (err) console.error("History log failed", err);
               res.json({ message: "Status updated successfully" });
@@ -218,42 +218,6 @@ router.put("/profile", (req, res) => {
   );
 });
 
-// ============================================
-// PUT /api/tailor/profile - Update tailor profile
-// ============================================
-router.put('/profile', (req, res) => {
-  try {
-    const { name, phone, address, city } = req.body;
-
-    // Validate required fields
-    if (!name || name.trim().length === 0) {
-      return res.status(400).json({ error: 'Name is required' });
-    }
-
-    // Update tailor profile
-    db.prepare(`
-      UPDATE users 
-      SET name = ?, phone = ?, address = ?, city = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `).run(name.trim(), phone || null, address || null, city || null, req.user.id);
-
-    // Get updated tailor info
-    const tailor = db.prepare(`
-      SELECT id, email, name, phone, address, city, created_at 
-      FROM users WHERE id = ?
-    `).get(req.user.id);
-
-    res.json({ 
-      message: 'Profile updated successfully',
-      tailor 
-    });
-
-  } catch (error) {
-    console.error('Tailor profile update error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-module.exports = router;
+export default router;
 
 

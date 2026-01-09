@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import './GetStarted.css';
+import { API_URL } from '../config';
 
 function GetStarted() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ function GetStarted() {
     company: '',
     need: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,14 +23,48 @@ function GetStarted() {
       ...prev,
       [name]: value
     }));
+    // Clear message when user types
+    if (message.text) setMessage({ type: '', text: '' });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API
-    console.log('Form submitted:', formData);
-    alert('Thank you! We will contact you soon.');
-    setFormData({ name: '', email: '', phone: '', company: '', need: '' });
+    setIsSubmitting(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch(`${API_URL}/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Submission failed');
+      }
+
+      setMessage({ 
+        type: 'success', 
+        text: 'Thank you! We will contact you soon.' 
+      });
+      setFormData({ name: '', email: '', phone: '', company: '', need: '' });
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setMessage({ 
+        type: 'error', 
+        text: error.message || 'Something went wrong. Please try again.' 
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const benefits = [
@@ -63,6 +100,12 @@ function GetStarted() {
           {/* Right Side - Form */}
           <div className="get-started-form-card">
             <h3>Get Started</h3>
+            
+            {message.text && (
+              <div className={`form-message ${message.type}`}>
+                {message.text}
+              </div>
+            )}
             
             <form onSubmit={handleSubmit} className="contact-form">
               <div className="form-group">
@@ -125,8 +168,12 @@ function GetStarted() {
                 </select>
               </div>
 
-              <button type="submit" className="btn btn-primary btn-block">
-                Book Your Measurement Now
+              <button 
+                type="submit" 
+                className="btn btn-primary btn-block"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Book Your Measurement Now'}
               </button>
 
               <p className="form-note">

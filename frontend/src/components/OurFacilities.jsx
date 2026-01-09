@@ -1,5 +1,5 @@
 import "./OurFacilities.css";
-import pwbg from "../assets/pwbg.png";
+import pwbg from "../assets/Pwbg.png";
 import Cwbg from "../assets/Cwbg.png";
 import Mwbg from "../assets/Mwbg.png";
 import Cmwbg from "../assets/Cmwbg.png";

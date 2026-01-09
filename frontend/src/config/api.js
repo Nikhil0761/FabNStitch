@@ -1,16 +1,7 @@
-import axios from "axios";
+// Frontend API Configuration
+// This file determines which backend API URL to use
 
-const API = axios.create({
-  baseURL: "https://api.fabnstitch.com/api",
-});
+// Use environment variable if available, otherwise use localhost for development
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
-/* Attach JWT automatically */
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("fabnstitch_token");
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
-});
-
-export default API;
+console.log('🔗 API URL:', API_URL);
