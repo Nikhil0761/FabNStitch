@@ -1,456 +1,479 @@
 /* ============================================
-   Customer Profile Page
-   ============================================ */
+   Customer Profile Page (PRODUCTION FINAL)
+============================================ */
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DashboardLayout from '../components/DashboardLayout';
-import './CustomerProfile.css';
-
-import { API_URL } from '../config';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { User, Edit2, CheckCircle, AlertCircle, Mail, MapPin, Phone, Save, Lock, Shield, Settings, X } from "lucide-react";
+import DashboardLayout from "../components/DashboardLayout";
+import "./CustomerProfile.css";
+import { API_URL } from "../config";
 
 function CustomerProfile() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
-  
+
+  // ✅ CORRECT TOKEN
+  const token = localStorage.getItem("fabnstitch_token");
+
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
-  
-  // Form data
+  const [message, setMessage] = useState({ type: "", text: "" });
+
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    city: ''
+    name: "",
+    phone: "",
+    address: "",
+    city: "",
   });
 
-  // Password change
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
+  /* ============================================
+     HELPERS
+  ============================================ */
+  const logout = () => {
+    localStorage.removeItem("fabnstitch_token");
+    localStorage.removeItem("fabnstitch_user");
+    navigate("/login");
+  };
+
+  /* ============================================
+     LOAD PROFILE
+  ============================================ */
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      logout();
       return;
     }
     fetchProfile();
-  }, [token, navigate]);
+    // eslint-disable-next-line
+  }, [token]);
 
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/customer/profile`, {
+
+      const res = await fetch(`${API_URL}/customer/profile`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
-          return;
-        }
-        throw new Error('Failed to fetch profile');
+      if (res.status === 401 || res.status === 403) {
+        logout();
+        return;
       }
 
-      const data = await response.json();
+      if (!res.ok) throw new Error("Failed to fetch profile");
+
+      const data = await res.json();
+
+      // ✅ ROLE CHECK
+      if (data.user.role !== "customer") {
+        logout();
+        return;
+      }
+
       setUser(data.user);
       setFormData({
-        name: data.user.name || '',
-        phone: data.user.phone || '',
-        address: data.user.address || '',
-        city: data.user.city || ''
+        name: data.user.name || "",
+        phone: data.user.phone || "",
+        address: data.user.address || "",
+        city: data.user.city || "",
       });
     } catch (err) {
-      console.error('Profile error:', err);
-      setMessage({ type: 'error', text: 'Failed to load profile' });
+      console.error(err);
+      setMessage({ type: "error", text: "Failed to load profile" });
     } finally {
       setIsLoading(false);
     }
   };
 
+  /* ============================================
+     UPDATE PROFILE
+  ============================================ */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((p) => ({ ...p, [name]: value }));
   };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
     try {
-      const response = await fetch(`${API_URL}/customer/profile`, {
-        method: 'PUT',
+      const res = await fetch(`${API_URL}/customer/profile`, {
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
+      if (res.status === 401 || res.status === 403) {
+        logout();
+        return;
       }
 
-      const data = await response.json();
+      if (!res.ok) throw new Error("Update failed");
+
+      const data = await res.json();
+
       setUser(data.user);
+      localStorage.setItem("fabnstitch_user", JSON.stringify(data.user));
       setIsEditing(false);
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      
-      // Clear message after 3 seconds
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      setMessage({ type: "success", text: "Profile updated successfully" });
+
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch (err) {
-      console.error('Update error:', err);
-      setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' });
+      console.error(err);
+      setMessage({ type: "error", text: "Profile update failed" });
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setFormData({
-      name: user.name || '',
-      phone: user.phone || '',
-      address: user.address || '',
-      city: user.city || ''
-    });
-    setIsEditing(false);
-  };
-
+  /* ============================================
+     CHANGE PASSWORD
+  ============================================ */
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    setPasswordData(prev => ({ ...prev, [name]: value }));
-    setPasswordError('');
+    setPasswordData((p) => ({ ...p, [name]: value }));
+    setPasswordError("");
   };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    
-    // Validation
+
     if (passwordData.newPassword.length < 6) {
-      setPasswordError('New password must be at least 6 characters');
+      setPasswordError("Password must be at least 6 characters");
       return;
     }
-    
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setPasswordError('Passwords do not match');
+      setPasswordError("Passwords do not match");
       return;
     }
 
     setIsChangingPassword(true);
-    setPasswordError('');
 
     try {
-      const response = await fetch(`${API_URL}/auth/password`, {
-        method: 'PUT',
+      const res = await fetch(`${API_URL}/auth/password`, {
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword
-        })
+          newPassword: passwordData.newPassword,
+        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to change password');
+      if (res.status === 401 || res.status === 403) {
+        logout();
+        return;
       }
 
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
       setShowPasswordModal(false);
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setMessage({ type: 'success', text: 'Password changed successfully!' });
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setMessage({ type: "success", text: "Password changed successfully" });
     } catch (err) {
-      console.error('Password change error:', err);
-      setPasswordError(err.message || 'Failed to change password');
+      setPasswordError(err.message || "Password update failed");
     } finally {
       setIsChangingPassword(false);
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
-
+  /* ============================================
+     STATES
+  ============================================ */
   if (isLoading) {
     return (
       <DashboardLayout>
         <div className="profile-loading">
-          <div className="loader"></div>
+          <div className="loader" />
           <p>Loading profile...</p>
         </div>
       </DashboardLayout>
     );
   }
 
+  /* ============================================
+     UI
+  ============================================ */
   return (
-    <DashboardLayout>
-      <div className="profile-page">
-        {/* Page Header */}
-        <div className="page-header">
+    <DashboardLayout role="customer">
+      <div className="dashboard-container">
+        <div className="dashboard-header">
           <div>
             <h1>My Profile</h1>
-            <p>Manage your personal information</p>
+            <p>Manage your account settings and preferences</p>
           </div>
-          {!isEditing && (
-            <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-              </svg>
-              Edit Profile
-            </button>
-          )}
         </div>
 
-        {/* Success/Error Message */}
         {message.text && (
           <div className={`message-banner ${message.type}`}>
-            {message.type === 'success' ? '✓' : '⚠'} {message.text}
+            {message.type === "success" ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+            {message.text}
           </div>
         )}
 
-        {/* Profile Content */}
-        <div className="profile-content">
-          {/* Profile Card */}
-          <div className="profile-card main-card">
-            <div className="profile-header">
-              <div className="profile-avatar">
-                {user?.name?.charAt(0).toUpperCase()}
+        <div className="profile-grid">
+          {/* Left Column: Personal Information */}
+          <div className="profile-section main-info">
+            <div className="section-header">
+              <User size={24} className="section-icon" />
+              <h2>Personal Information</h2>
+              {!isEditing && (
+                <button
+                  className="icon-btn edit-btn"
+                  onClick={() => setIsEditing(true)}
+                  title="Edit Profile"
+                >
+                  <Edit2 size={18} />
+                </button>
+              )}
+            </div>
+
+            <div className="profile-card-content">
+              {isEditing ? (
+                <form onSubmit={handleSaveProfile} className="profile-form">
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <div className="input-wrapper">
+                      <User size={18} />
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Your Name"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Email Address</label>
+                    <div className="input-wrapper">
+                      <Mail size={18} />
+                      <input
+                        type="email"
+                        value={user?.email || ""}
+                        disabled
+                        className="disabled-input"
+                      />
+                    </div>
+                    <span className="input-hint">Email cannot be changed</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <div className="input-wrapper">
+                      <Phone size={18} />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="Phone Number"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>City</label>
+                    <div className="input-wrapper">
+                      <MapPin size={18} />
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        placeholder="City"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group full-width">
+                    <label>Delivery Address</label>
+                    <div className="input-wrapper textarea-wrapper">
+                      <MapPin size={18} className="mt-1" />
+                      <textarea
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        placeholder="Complete Address"
+                        rows="3"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="cancel-btn"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setFormData({
+                          name: user.name || "",
+                          phone: user.phone || "",
+                          address: user.address || "",
+                          city: user.city || "",
+                        });
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="save-btn" disabled={isSaving}>
+                      {isSaving ? (
+                        <>
+                          <span className="spinner-small"></span> Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save size={18} /> Save Changes
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="info-display">
+                  <div className="info-row">
+                    <span className="label">Full Name</span>
+                    <span className="value">{user?.name || "Not set"}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">Email</span>
+                    <span className="value">{user?.email}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">Phone</span>
+                    <span className="value">{user?.phone || "Not set"}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">City</span>
+                    <span className="value">{user?.city || "Not set"}</span>
+                  </div>
+                  <div className="info-row full-width">
+                    <span className="label">Address</span>
+                    <span className="value address-value">{user?.address || "Not set"}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Security & Settings */}
+          <div className="profile-sidebar">
+            <div className="profile-section security-section">
+              <div className="section-header">
+                <Shield size={24} className="section-icon" />
+                <h2>Security</h2>
               </div>
-              <div className="profile-intro">
-                <h2>{user?.name}</h2>
-                <p className="profile-email">{user?.email}</p>
-                <span className="member-since">Member since {formatDate(user?.created_at)}</span>
+              <div className="profile-card-content">
+                <p className="security-desc">
+                  Manage your password and account security settings.
+                </p>
+                <button
+                  className="change-password-btn"
+                  onClick={() => setShowPasswordModal(true)}
+                >
+                  <Lock size={18} /> Change Password
+                </button>
               </div>
             </div>
 
-            {isEditing ? (
-              <form className="profile-form" onSubmit={handleSaveProfile}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">Full Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone Number</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+91 9876543210"
-                    />
-                  </div>
-                  
-                  <div className="form-group full-width">
-                    <label htmlFor="address">Address</label>
-                    <textarea
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      rows="3"
-                      placeholder="Enter your address"
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="city">City</label>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      placeholder="Mumbai"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button type="button" className="btn btn-outline" onClick={handleCancelEdit}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary" disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save Changes'}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="profile-details">
-                <div className="detail-row">
-                  <div className="detail-item">
-                    <span className="detail-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                      </svg>
-                      Full Name
-                    </span>
-                    <span className="detail-value">{user?.name || 'Not provided'}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                      </svg>
-                      Phone
-                    </span>
-                    <span className="detail-value">{user?.phone || 'Not provided'}</span>
-                  </div>
-                </div>
-                
-                <div className="detail-row">
-                  <div className="detail-item">
-                    <span className="detail-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
-                      </svg>
-                      Email
-                    </span>
-                    <span className="detail-value">{user?.email}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      City
-                    </span>
-                    <span className="detail-value">{user?.city || 'Not provided'}</span>
-                  </div>
-                </div>
-                
-                <div className="detail-row">
-                  <div className="detail-item full-width">
-                    <span className="detail-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                      </svg>
-                      Address
-                    </span>
-                    <span className="detail-value">{user?.address || 'Not provided'}</span>
-                  </div>
-                </div>
+            {/* Placeholder for future preferences/notifications */}
+            {/* 
+            <div className="profile-section preferences-section">
+              <div className="section-header">
+                <Settings size={24} className="section-icon" />
+                <h2>Preferences</h2>
               </div>
-            )}
-          </div>
-
-          {/* Security Card */}
-          <div className="profile-card security-card">
-            <h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-              Security
-            </h3>
-            <p>Keep your account secure by using a strong password.</p>
-            
-            <button className="btn btn-outline" onClick={() => setShowPasswordModal(true)}>
-              Change Password
-            </button>
+              ...
+            </div> 
+            */}
           </div>
         </div>
 
-        {/* Password Change Modal */}
+        {/* Change Password Modal */}
         {showPasswordModal && (
-          <div className="modal-overlay" onClick={() => setShowPasswordModal(false)}>
-            <div className="password-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-overlay">
+            <div className="modal-content password-modal">
               <div className="modal-header">
                 <h2>Change Password</h2>
-                <button className="modal-close" onClick={() => setShowPasswordModal(false)}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
+                <button onClick={() => setShowPasswordModal(false)} className="close-btn">
+                  <X size={24} />
                 </button>
               </div>
-              
               <form onSubmit={handleChangePassword}>
-                <div className="modal-body">
-                  {passwordError && (
-                    <div className="password-error">{passwordError}</div>
-                  )}
-                  
-                  <div className="form-group">
-                    <label htmlFor="currentPassword">Current Password</label>
+                <div className="form-group">
+                  <label>Current Password</label>
+                  <div className="input-wrapper">
+                    <Lock size={18} />
                     <input
                       type="password"
-                      id="currentPassword"
-                      name="currentPassword"
+                      placeholder="Enter current password"
                       value={passwordData.currentPassword}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="newPassword">New Password</label>
-                    <input
-                      type="password"
-                      id="newPassword"
-                      name="newPassword"
-                      value={passwordData.newPassword}
-                      onChange={handlePasswordChange}
-                      required
-                      minLength={6}
-                    />
-                    <span className="input-hint">At least 6 characters</span>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="confirmPassword">Confirm New Password</label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={passwordData.confirmPassword}
-                      onChange={handlePasswordChange}
-                      required
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                      }
                     />
                   </div>
                 </div>
-                
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-outline" onClick={() => setShowPasswordModal(false)}>
+                <div className="form-group">
+                  <label>New Password</label>
+                  <div className="input-wrapper">
+                    <Lock size={18} />
+                    <input
+                      type="password"
+                      placeholder="Enter new password"
+                      value={passwordData.newPassword}
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, newPassword: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Confirm New Password</label>
+                  <div className="input-wrapper">
+                    <Lock size={18} />
+                    <input
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setShowPasswordModal(false)}
+                  >
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary" disabled={isChangingPassword}>
-                    {isChangingPassword ? 'Changing...' : 'Change Password'}
+                  <button type="submit" className="save-btn" disabled={isChangingPassword}>
+                    {isChangingPassword ? "Updating..." : "Update Password"}
                   </button>
                 </div>
               </form>
@@ -463,4 +486,3 @@ function CustomerProfile() {
 }
 
 export default CustomerProfile;
-

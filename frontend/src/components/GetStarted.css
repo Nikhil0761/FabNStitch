@@ -108,6 +108,50 @@
 /* Form Note */
 .form-note {
   text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-top: var(--space-md);
+}
+
+/* Form Messages */
+.form-message {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  font-size: 0.95rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.form-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.form-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button States */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.form-note {
+  text-align: center;
   margin-top: var(--space-lg);
   margin-bottom: 0;
   color: var(--color-accent);
@@ -140,4 +184,3 @@
     padding: var(--space-lg);
   }
 }
-

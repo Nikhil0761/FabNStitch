@@ -1,7 +1,3 @@
-/* ============================================
-   Customer Dashboard Page
-   ============================================ */
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
@@ -19,15 +15,15 @@ function CustomerDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('fabnstitch_token');
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    fetchDashboardData();
-  }, [token, navigate]);
+useEffect(() => {
+  if (!token) {
+    navigate('/login');
+    return;
+  }
+  fetchDashboardData();
+}, [token, navigate]);
 
   const fetchDashboardData = async () => {
     try {
@@ -63,7 +59,8 @@ function CustomerDashboard() {
 
       if (measurementsRes.ok) {
         const measurementsData = await measurementsRes.json();
-        setMeasurements(measurementsData.measurements);
+              setMeasurements(measurementsData);
+
       }
 
     } catch (err) {
@@ -116,6 +113,7 @@ function CustomerDashboard() {
       </DashboardLayout>
     );
   }
+console.log("Measurements state:", measurements);
 
   return (
     <DashboardLayout>
@@ -225,39 +223,46 @@ function CustomerDashboard() {
               <h2>Your Measurements</h2>
             </div>
             
-            {measurements ? (
-              <div className="measurements-grid">
-                <div className="measurement-item">
-                  <span className="measurement-label">Chest</span>
-                  <span className="measurement-value">{measurements.chest}"</span>
-                </div>
-                <div className="measurement-item">
-                  <span className="measurement-label">Waist</span>
-                  <span className="measurement-value">{measurements.waist}"</span>
-                </div>
-                <div className="measurement-item">
-                  <span className="measurement-label">Shoulders</span>
-                  <span className="measurement-value">{measurements.shoulders}"</span>
-                </div>
-                <div className="measurement-item">
-                  <span className="measurement-label">Arm Length</span>
-                  <span className="measurement-value">{measurements.arm_length}"</span>
-                </div>
-                <div className="measurement-item">
-                  <span className="measurement-label">Jacket Length</span>
-                  <span className="measurement-value">{measurements.jacket_length}"</span>
-                </div>
-                <div className="measurement-item">
-                  <span className="measurement-label">Neck</span>
-                  <span className="measurement-value">{measurements.neck}"</span>
-                </div>
-              </div>
-            ) : (
-              <div className="empty-state">
-                <p>No measurements recorded yet</p>
-                <p className="empty-hint">Our tailor will take your measurements during your appointment</p>
-              </div>
-            )}
+            {measurements && measurements.chest !== null ? (
+  <div className="measurements-grid">
+    <div className="measurement-item">
+      <span className="measurement-label">Chest</span>
+      <span className="measurement-value">{measurements.chest}"</span>
+    </div>
+
+    <div className="measurement-item">
+      <span className="measurement-label">Waist</span>
+      <span className="measurement-value">{measurements.waist}"</span>
+    </div>
+
+    <div className="measurement-item">
+      <span className="measurement-label">Shoulders</span>
+      <span className="measurement-value">{measurements.shoulders}"</span>
+    </div>
+
+    <div className="measurement-item">
+      <span className="measurement-label">Arm Length</span>
+      <span className="measurement-value">{measurements.arm_length}"</span>
+    </div>
+
+    <div className="measurement-item">
+      <span className="measurement-label">Jacket Length</span>
+      <span className="measurement-value">{measurements.jacket_length}"</span>
+    </div>
+
+    <div className="measurement-item">
+      <span className="measurement-label">Neck</span>
+      <span className="measurement-value">{measurements.neck}"</span>
+    </div>
+  </div>
+) : (
+  <div className="empty-state">
+    <p>No measurements recorded yet</p>
+    <p className="empty-hint">
+      Our tailor will take your measurements during your appointment
+    </p>
+  </div>
+)}
           </div>
         </div>
       </div>

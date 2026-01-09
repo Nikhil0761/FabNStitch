@@ -1,280 +1,221 @@
-/* ============================================
-   Tailor Routes
-   ============================================
-   
-   Routes for tailor-specific operations:
-   - GET /api/tailor/dashboard - Dashboard data
-   - GET /api/tailor/orders - Get assigned orders
-   - GET /api/tailor/orders/:id - Get single order details
-   - PUT /api/tailor/orders/:id/status - Update order status
-   
-   ============================================ */
+import express from "express";
+import { db } from "../db.js";
+import {
+  authenticateToken,
+  authorizeRoles,
+} from "../middleware/auth.js";
 
-const express = require('express');
 const router = express.Router();
-const { db } = require('../database/init');
-const { authenticateToken, requireTailor } = require('../middleware/auth');
 
-// All routes require authentication and tailor role
+/* ============================================
+   AUTH + TAILOR ROLE ONLY
+============================================ */
 router.use(authenticateToken);
-router.use(requireTailor);
+router.use(authorizeRoles("tailor"));
 
-// ============================================
-// GET /api/tailor/dashboard - Dashboard summary
-// ============================================
-router.get('/dashboard', (req, res) => {
-  try {
-    const tailorId = req.user.id;
+/* ============================================
+   DASHBOARD
+   GET /api/tailor/dashboard
+============================================ */
+router.get("/dashboard", (req, res) => {
+  const tailorId = req.user.id;
 
-    // Get tailor info
-    const tailor = db.prepare(`
-      SELECT id, name, email, phone, city FROM users WHERE id = ?
-    `).get(tailorId);
+  db.query(
+    `
+    SELECT id, name, email, phone, city, role
+    FROM users WHERE id = ?
+    `,
+    [tailorId],
+    (err, tailor) => {
+      if (err || !tailor.length)
+        return res.status(404).json({ error: "Tailor not found" });
 
-    // Get order counts by status
-    const orderStats = db.prepare(`
-      SELECT 
-        COUNT(*) as total,
-        SUM(CASE WHEN status = 'confirmed' THEN 1 ELSE 0 END) as confirmed,
-        SUM(CASE WHEN status = 'stitching' THEN 1 ELSE 0 END) as stitching,
-        SUM(CASE WHEN status = 'finishing' THEN 1 ELSE 0 END) as finishing,
-        SUM(CASE WHEN status = 'quality_check' THEN 1 ELSE 0 END) as quality_check,
-        SUM(CASE WHEN status = 'ready' THEN 1 ELSE 0 END) as ready,
-        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered
-      FROM orders WHERE tailor_id = ?
-    `).get(tailorId);
+      db.query(
+        `
+        SELECT
+          SUM(status = 'confirmed') AS confirmed,
+          SUM(status = 'stitching') AS stitching,
+          SUM(status = 'finishing') AS finishing,
+          SUM(status = 'quality_check') AS quality_check,
+          SUM(status = 'ready') AS ready,
+          SUM(status = 'delivered') AS delivered
+        FROM orders
+        WHERE tailor_id = ?
+        `,
+        [tailorId],
+        (err, stats) => {
+          if (err) return res.status(500).json({ error: "Stats error" });
 
-    // Get pending orders (assigned but not completed)
-    const pendingOrders = db.prepare(`
-      SELECT 
-        o.id, o.order_id, o.style, o.status, o.price, o.created_at, o.estimated_delivery,
-        f.name as fabric_name, f.color as fabric_color, f.material as fabric_material,
-        u.name as customer_name, u.phone as customer_phone
-      FROM orders o
-      LEFT JOIN fabrics f ON o.fabric_id = f.id
-      LEFT JOIN users u ON o.user_id = u.id
-      WHERE o.tailor_id = ? AND o.status NOT IN ('delivered', 'cancelled')
-      ORDER BY 
-        CASE o.status 
-          WHEN 'confirmed' THEN 1
-          WHEN 'stitching' THEN 2
-          WHEN 'finishing' THEN 3
-          WHEN 'quality_check' THEN 4
-          WHEN 'ready' THEN 5
-          ELSE 6
-        END,
-        o.estimated_delivery ASC
-      LIMIT 10
-    `).all(tailorId);
+          db.query(
+            `
+            SELECT 
+              o.order_id,
+              o.style,
+              o.status,
+              o.price,
+              o.estimated_delivery,
+              f.name AS fabric_name,
+              f.color AS fabric_color
+            FROM orders o
+            LEFT JOIN fabrics f ON o.fabric_id = f.id
+            WHERE o.tailor_id = ?
+              AND o.status NOT IN ('delivered')
+            ORDER BY o.estimated_delivery ASC
+            `,
+            [tailorId],
+            (err, pendingOrders) => {
+              if (err)
+                return res.status(500).json({ error: "Orders error" });
 
-    // Get today's work count
-    const today = new Date().toISOString().split('T')[0];
-    const todayStats = db.prepare(`
-      SELECT COUNT(*) as count FROM order_status_history 
-      WHERE updated_by = ? AND DATE(created_at) = ?
-    `).get(tailorId, today);
-
-    res.json({
-      tailor,
-      stats: {
-        totalOrders: orderStats.total || 0,
-        confirmed: orderStats.confirmed || 0,
-        stitching: orderStats.stitching || 0,
-        finishing: orderStats.finishing || 0,
-        qualityCheck: orderStats.quality_check || 0,
-        ready: orderStats.ready || 0,
-        delivered: orderStats.delivered || 0,
-        todayUpdates: todayStats.count || 0
-      },
-      pendingOrders
-    });
-
-  } catch (error) {
-    console.error('Tailor dashboard error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// ============================================
-// GET /api/tailor/orders - Get all assigned orders
-// ============================================
-router.get('/orders', (req, res) => {
-  try {
-    const { status } = req.query;
-    const tailorId = req.user.id;
-    
-    let query = `
-      SELECT 
-        o.id, o.order_id, o.style, o.status, o.price, o.created_at, 
-        o.estimated_delivery, o.delivery_address, o.notes,
-        f.name as fabric_name, f.color as fabric_color, f.material as fabric_material,
-        u.name as customer_name, u.phone as customer_phone, u.email as customer_email
-      FROM orders o
-      LEFT JOIN fabrics f ON o.fabric_id = f.id
-      LEFT JOIN users u ON o.user_id = u.id
-      WHERE o.tailor_id = ?
-    `;
-
-    const params = [tailorId];
-
-    if (status && status !== 'all') {
-      query += ' AND o.status = ?';
-      params.push(status);
+              res.json({
+                user: tailor[0],
+                stats: stats[0],
+                pendingOrders,
+              });
+            }
+          );
+        }
+      );
     }
-
-    query += ` ORDER BY 
-      CASE o.status 
-        WHEN 'confirmed' THEN 1
-        WHEN 'stitching' THEN 2
-        WHEN 'finishing' THEN 3
-        WHEN 'quality_check' THEN 4
-        WHEN 'ready' THEN 5
-        WHEN 'shipped' THEN 6
-        ELSE 7
-      END,
-      o.estimated_delivery ASC`;
-
-    const orders = db.prepare(query).all(...params);
-
-    res.json({ orders });
-
-  } catch (error) {
-    console.error('Tailor orders error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
+  );
 });
 
-// ============================================
-// GET /api/tailor/orders/:id - Get single order with details
-// ============================================
-router.get('/orders/:id', (req, res) => {
-  try {
-    const tailorId = req.user.id;
-    
-    const order = db.prepare(`
-      SELECT 
-        o.*,
-        f.name as fabric_name, f.color as fabric_color, 
-        f.material as fabric_material, f.price as fabric_price,
-        u.name as customer_name, u.phone as customer_phone, u.email as customer_email,
-        u.address as customer_address, u.city as customer_city,
-        m.chest, m.waist, m.shoulders, m.arm_length, m.jacket_length, m.neck, m.notes as measurement_notes
-      FROM orders o
-      LEFT JOIN fabrics f ON o.fabric_id = f.id
-      LEFT JOIN users u ON o.user_id = u.id
-      LEFT JOIN measurements m ON o.user_id = m.user_id
-      WHERE o.order_id = ? AND o.tailor_id = ?
-    `).get(req.params.id, tailorId);
-
-    if (!order) {
-      return res.status(404).json({ error: 'Order not found or not assigned to you' });
+/* ============================================
+   ORDERS (All Active for Tailor)
+   GET /api/tailor/orders
+============================================ */
+router.get("/orders", (req, res) => {
+  db.query(
+    `
+    SELECT 
+      o.order_id,
+      o.style,
+      o.status,
+      o.price,
+      o.estimated_delivery,
+      f.name AS fabric_name,
+      f.color AS fabric_color
+    FROM orders o
+    LEFT JOIN fabrics f ON o.fabric_id = f.id
+    WHERE o.tailor_id = ?
+    ORDER BY o.estimated_delivery ASC
+    `,
+    [req.user.id],
+    (err, orders) => {
+      if (err) return res.status(500).json({ error: "Orders fetch error" });
+      res.json({ orders });
     }
-
-    // Get status history
-    const history = db.prepare(`
-      SELECT 
-        h.status, h.notes, h.created_at,
-        u.name as updated_by_name
-      FROM order_status_history h
-      LEFT JOIN users u ON h.updated_by = u.id
-      WHERE h.order_id = ?
-      ORDER BY h.created_at DESC
-    `).all(order.id);
-
-    res.json({ order, history });
-
-  } catch (error) {
-    console.error('Tailor order detail error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
+  );
 });
 
-// ============================================
-// PUT /api/tailor/orders/:id/status - Update order status
-// ============================================
-router.put('/orders/:id/status', (req, res) => {
-  try {
-    const tailorId = req.user.id;
-    const { status, notes } = req.body;
+/* ============================================
+   ORDER DETAILS
+   GET /api/tailor/orders/:orderId
+============================================ */
+router.get("/orders/:orderId", (req, res) => {
+  const { orderId } = req.params;
 
-    // Valid status transitions for tailor
-    const validStatuses = ['stitching', 'finishing', 'quality_check', 'ready'];
-    
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ 
-        error: 'Invalid status. Tailor can only set: stitching, finishing, quality_check, ready' 
+  db.query(
+    `
+    SELECT 
+      o.*,
+      f.name AS fabric_name,
+      f.color AS fabric_color,
+      u.name AS customer_name,
+      u.phone AS customer_phone
+    FROM orders o
+    LEFT JOIN fabrics f ON o.fabric_id = f.id
+    LEFT JOIN users u ON o.user_id = u.id
+    WHERE o.order_id = ? AND o.tailor_id = ?
+    `,
+    [orderId, req.user.id],
+    (err, orders) => {
+      if (err) return res.status(500).json({ error: "Error fetching order" });
+      if (!orders.length) return res.status(404).json({ error: "Order not found" });
+
+      const order = orders[0];
+
+      db.query(
+        "SELECT * FROM order_status_history WHERE order_id = ? ORDER BY created_at ASC",
+        [order.id],
+        (err, history) => {
+          if (err) return res.status(500).json({ error: "Error fetching history" });
+          res.json({ order, history });
+        }
+      );
+    }
+  );
+});
+
+/* ============================================
+   UPDATE STATUS
+   PUT /api/tailor/orders/:orderId/status
+============================================ */
+router.put("/orders/:orderId/status", (req, res) => {
+  const { orderId } = req.params;
+  const { status, notes } = req.body;
+
+  // 1. Verify ownership
+  db.query(
+    "SELECT id, user_id FROM orders WHERE order_id = ? AND tailor_id = ?",
+    [orderId, req.user.id],
+    (err, orders) => {
+      if (err || !orders.length) return res.status(404).json({ error: "Order not found" });
+      const order = orders[0];
+
+      // 2. Update status
+      db.query(
+        "UPDATE orders SET status = ? WHERE id = ?",
+        [status, order.id],
+        (err) => {
+          if (err) return res.status(500).json({ error: "Update failed" });
+
+          // 3. Add history entry with updated_by
+          db.query(
+            "INSERT INTO order_status_history (order_id, status, notes, updated_by) VALUES (?, ?, ?, ?)",
+            [order.id, status, notes || `Status updated to ${status}`, req.user.id],
+            (err) => {
+              if (err) console.error("History log failed", err);
+              res.json({ message: "Status updated successfully" });
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
+/* ============================================
+   PROFILE
+   GET /api/tailor/profile
+============================================ */
+router.get("/profile", (req, res) => {
+  db.query("SELECT * FROM users WHERE id = ?", [req.user.id], (err, users) => {
+    if (err) return res.status(500).json({ error: "Profile error" });
+    if (!users.length) return res.status(404).json({ error: "User not found" });
+    res.json({ user: users[0] });
+  });
+});
+
+/* ============================================
+   UPDATE PROFILE
+   PUT /api/tailor/profile
+============================================ */
+router.put("/profile", (req, res) => {
+  const { name, phone, address, city } = req.body;
+  db.query(
+    "UPDATE users SET name = ?, phone = ?, address = ?, city = ? WHERE id = ?",
+    [name, phone, address, city, req.user.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: "Update failed" });
+
+      // Return updated user
+      db.query("SELECT * FROM users WHERE id = ?", [req.user.id], (err, users) => {
+        if (err) return res.status(500).json({ error: "Fetch error" });
+        res.json({ user: users[0] });
       });
     }
-
-    // Check if order exists and is assigned to this tailor
-    const order = db.prepare(`
-      SELECT id, status FROM orders WHERE order_id = ? AND tailor_id = ?
-    `).get(req.params.id, tailorId);
-
-    if (!order) {
-      return res.status(404).json({ error: 'Order not found or not assigned to you' });
-    }
-
-    // Update order status
-    db.prepare(`
-      UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?
-    `).run(status, order.id);
-
-    // Add to status history
-    db.prepare(`
-      INSERT INTO order_status_history (order_id, status, notes, updated_by)
-      VALUES (?, ?, ?, ?)
-    `).run(order.id, status, notes || null, tailorId);
-
-    // Get updated order
-    const updatedOrder = db.prepare(`
-      SELECT 
-        o.*, u.name as customer_name
-      FROM orders o
-      LEFT JOIN users u ON o.user_id = u.id
-      WHERE o.id = ?
-    `).get(order.id);
-
-    res.json({ 
-      message: 'Order status updated successfully',
-      order: updatedOrder 
-    });
-
-  } catch (error) {
-    console.error('Status update error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// ============================================
-// GET /api/tailor/profile - Get tailor profile
-// ============================================
-router.get('/profile', (req, res) => {
-  try {
-    const tailor = db.prepare(`
-      SELECT id, email, name, phone, address, city, created_at 
-      FROM users WHERE id = ?
-    `).get(req.user.id);
-
-    if (!tailor) {
-      return res.status(404).json({ error: 'Tailor not found' });
-    }
-
-    // Get performance stats
-    const stats = db.prepare(`
-      SELECT 
-        COUNT(*) as total_completed,
-        COUNT(DISTINCT DATE(updated_at)) as active_days
-      FROM orders 
-      WHERE tailor_id = ? AND status = 'delivered'
-    `).get(req.user.id);
-
-    res.json({ tailor, stats });
-
-  } catch (error) {
-    console.error('Tailor profile error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
+  );
 });
 
 // ============================================

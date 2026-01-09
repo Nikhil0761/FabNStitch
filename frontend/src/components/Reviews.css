@@ -1,42 +1,56 @@
 /* ============================================
-   Reviews Section Styles
-   ============================================ */
+   REVIEWS SECTION – FINAL RESPONSIVE
+============================================ */
 
 .reviews {
   background: var(--color-white);
+  overflow-x: hidden; /* prevent mobile overflow */
 }
 
-/* Header */
+/* =========================
+   HEADER
+========================= */
+
 .reviews-header {
-  margin-bottom: var(--space-3xl);
+  margin-bottom: clamp(24px, 6vw, 64px);
+  text-align: center;
 }
 
 .reviews-header h2 {
-  font-size: 2.5rem;
+  font-size: clamp(22px, 6vw, 40px);
   color: var(--color-primary);
-  margin-bottom: var(--space-md);
+  margin-bottom: 12px;
 }
 
 .reviews-subtitle {
   color: var(--color-text-light);
-  font-size: 1.1rem;
-  margin: 0;
+  font-size: clamp(14px, 3.8vw, 17px);
+  max-width: 52ch;
+  margin: 0 auto;
 }
 
-/* Reviews Grid */
+/* =========================
+   GRID
+========================= */
+
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-xl);
+  grid-template-columns: repeat(4, 1fr); /* Desktop */
+  gap: clamp(16px, 4vw, 32px);
 }
 
-/* Review Card */
+/* =========================
+   CARD
+========================= */
+
 .review-card {
   background: var(--color-white);
-  padding: var(--space-xl);
+  padding: clamp(16px, 4vw, 28px);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
-  transition: all var(--transition-normal);
+  transition: box-shadow var(--transition-normal),
+              transform var(--transition-normal);
+  min-width: 0; /* 🔥 REQUIRED for mobile */
 }
 
 .review-card:hover {
@@ -46,12 +60,12 @@
 
 /* Stars */
 .review-stars {
-  margin-bottom: var(--space-lg);
+  margin-bottom: 10px;
 }
 
 .star {
   color: #f59e0b;
-  font-size: 1.1rem;
+  font-size: clamp(14px, 4vw, 18px);
   letter-spacing: 2px;
 }
 
@@ -59,63 +73,49 @@
 .review-quote {
   font-style: italic;
   color: var(--color-text);
-  font-size: 1rem;
-  line-height: 1.7;
-  margin: 0 0 var(--space-lg) 0;
-  padding: 0;
-  border: none;
+  font-size: clamp(13px, 3.6vw, 16px);
+  line-height: 1.6;
+  margin-bottom: 14px;
 }
 
 /* Author */
 .review-author {
   color: var(--color-text);
-  font-size: 0.95rem;
+  font-size: clamp(12px, 3.5vw, 15px);
   font-weight: 600;
 }
 
-/* Responsive */
+/* =========================
+   TABLET
+========================= */
+
 @media (max-width: 1024px) {
   .reviews-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
   }
 }
+
+/* =========================
+   MOBILE – 2 CARDS PER ROW
+========================= */
 
 @media (max-width: 768px) {
-  .reviews-header {
-    margin-bottom: var(--space-xl);
-    text-align: center;
-  }
-
-  .reviews-header h2 {
-    font-size: 1.75rem;
-  }
-
-  .reviews-subtitle {
-    font-size: 1rem;
-  }
-
   .reviews-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
+    grid-template-columns: repeat(2, 1fr); /* ✅ FORCE 2 */
+    gap: 12px;
   }
 
   .review-card {
-    padding: var(--space-lg);
-  }
-
-  .review-quote {
-    font-size: 0.95rem;
+    padding: 12px;
   }
 }
 
-@media (max-width: 480px) {
-  .reviews-header h2 {
-    font-size: 1.5rem;
-  }
+/* =========================
+   VERY SMALL PHONES SAFETY
+========================= */
 
-  .review-card {
-    padding: var(--space-md);
+@media (max-width: 340px) {
+  .reviews-grid {
+    grid-template-columns: 1fr; /* unavoidable fallback */
   }
 }
-

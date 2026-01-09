@@ -1,97 +1,125 @@
-/* ============================================
-   Hero Component
-   ============================================
-   
-   📚 LEARNING: JSX Syntax
-   
-   JSX lets you write HTML-like code in JavaScript.
-   Key differences from HTML:
-   - className instead of class
-   - style={{ }} for inline styles (object syntax)
-   - {expression} to embed JavaScript
-   - Self-closing tags need /  like <img />
-   
-   ============================================ */
-
-import './Hero.css';
-import blazerImage from '../assets/Blazer_collection.png';
-
-function Hero() {
+import "./Hero.css";
+import blazerImage from "../assets/Blazer_collection1.png";
+export default function Hero() {
   return (
-    <section className="hero" id="home">
-      {/* Background decorative elements */}
-      <div className="hero-bg">
-        <div className="hero-pattern"></div>
-      </div>
-      
-      <div className="container hero-container">
-        {/* Left side - Text content */}
-        <div className="hero-content">
-          <h1>
-            Redefining  <span className="text-accent">Organization </span>identity,
-            {/* <br /> */}
-            with Premium Custom Tailored Uniforms
-          </h1>
-          <p className="hero-description">
-            Experience the art of custom tailoring with FabNStitch. 
-            From premium fabrics to precise measurements, we create 
-            blazers that fit your unique style and personality.
-          </p>
-          
-          {/* Call to action buttons */}
-          <div className="hero-buttons">
-            <a href="#fabrics" className="btn btn-primary">
-              Explore Fabrics
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </a>
-            <a href="#how-it-works" className="btn btn-outline">
-              How It Works
-            </a>
-          </div>
+            <section className="hero">
+              <div className="hero-container">
 
-          {/* Trust indicators */}
-          <div className="hero-stats">
-            <div className="stat">
-              <span className="stat-number">5000+</span>
-              <span className="stat-label">Happy Customers</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">15+</span>
-              <span className="stat-label">Premium Fabrics</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">4.7/5</span>
-              <span className="stat-label">Customer Rating</span>
-            </div>
-          </div>
+        <div className="hero-left">
+         
+                    <h1>
+           Professional Uniforms Designed for Future <span className="highlight">  Leaders  </span>
+           
+            
+          </h1>
+
+
+          <p>
+            Expertly tailored uniforms for colleges, corporates, and institutions—crafted with premium fabrics, precision stitching, and detailed quality reports.
+          </p>
+
+          {/* CTA BUTTONS */}
+           <div className="hero-actions">
+  <div className="hero-email-box">
+    <input
+      type="email"
+      placeholder="Work email address"
+    />
+    <button className="hero-primary-btn">
+      Submit
+    </button>
+  </div>
+
+<button
+  className="hero-secondary-btn"
+  onClick={() => {
+    const target = document.getElementById("our-story-video");
+    const navbarHeight = 90; // adjust if your navbar height is different
+
+    const y =
+      target.getBoundingClientRect().top +
+      window.pageYOffset -
+      navbarHeight;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+
+    setTimeout(() => {
+      target.querySelector("video")?.play();
+    }, 600);
+  }}
+>
+  Watch Video
+</button>
+
+
+</div>
+
+                      {/* RATING CARDS */}
+            <div className="hero-review-cards">
+  <div className="review-card green-stars">
+    <div className="review-stars">★★★★★</div>
+    <div className="review-score">
+      <strong>4.9/5</strong>
+      <span>(100+ Institutions)</span>
+    </div>
+    <div className="review-label">Trusted Colleges</div>
+  </div>
+
+  <div className="review-card yellow-stars">
+    <div className="review-stars">★★★★★</div>
+    <div className="review-score">
+      <strong>4.8/5</strong>
+      <span>(Corporate Clients)</span>
+    </div>
+    <div className="review-label">Industry Partners</div>
+  </div>
+</div>
+
+
         </div>
 
-        {/* Right side - Visual */}
+
+        {/* RIGHT SIDE – VISUAL */}
         <div className="hero-visual">
+
           <div className="hero-image-wrapper">
-            <img 
-              src={blazerImage} 
-              alt="Premium Blazer Collection" 
+            <img
+              src={blazerImage}
+              alt="Premium Blazer Collection"
               className="hero-image"
             />
           </div>
-          
-          {/* Floating cards for visual interest */}
+
+          {/* Floating Cards */}
           <div className="floating-card card-1">
             <span className="card-icon">📏</span>
             <span>Perfect Fit</span>
           </div>
+
           <div className="floating-card card-2">
             <span className="card-icon">🧵</span>
-            <span>Hand Stitched</span>
+            <span>Quality Stitched</span>
           </div>
+
+          <div className="floating-card card-3">
+            <span className="card-icon">🧶</span>
+            <span>Premium Fabric</span>
+          </div>
+
+          {/* <div className="floating-card card-4">
+            <span className="card-icon">🏫</span>
+            <span>College Ready</span>
+          </div> */}
+
+          <div className="floating-card card-5">
+            <span className="card-icon">📦</span>
+            <span>Bulk Orders</span>
+          </div>
+          
+
         </div>
+
       </div>
     </section>
   );
 }
-
-export default Hero;
-
