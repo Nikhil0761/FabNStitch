@@ -14,13 +14,13 @@ import { API_URL } from '../config';
 function TailorLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('fabnstitch_token');
 
   // Determine active tab from URL
   const getActiveTab = () => {
@@ -50,7 +50,7 @@ function TailorLayout({ children }) {
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem('token');
+          localStorage.removeItem('fabnstitch_token');
           navigate('/login');
           return;
         }
@@ -58,10 +58,10 @@ function TailorLayout({ children }) {
       }
 
       const data = await response.json();
-      setUser(data.tailor);
+      setUser(data.user);
     } catch (err) {
       console.error('Auth error:', err);
-      localStorage.removeItem('token');
+      localStorage.removeItem('fabnstitch_token');
       navigate('/login');
     } finally {
       setIsLoading(false);
@@ -69,8 +69,8 @@ function TailorLayout({ children }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('fabnstitch_token');
+    localStorage.removeItem('fabnstitch_user');
     navigate('/login');
   };
 
@@ -105,7 +105,7 @@ function TailorLayout({ children }) {
       <header className="tailor-topbar">
         <div className="topbar-left">
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className={`mobile-menu-toggle ${showMobileMenu ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(!showMobileMenu)}
             aria-label="Toggle menu"
@@ -114,16 +114,16 @@ function TailorLayout({ children }) {
             <span></span>
             <span></span>
           </button>
-          
+
           <Link to="/" className="tailor-logo">
             <img src={logo} alt="FabNStitch" />
           </Link>
           <span className="tailor-badge">Tailor Portal</span>
         </div>
-        
+
         <div className="topbar-right">
           <div className="user-menu-wrapper">
-            <button 
+            <button
               className="user-menu-trigger"
               onClick={() => setShowUserMenu(!showUserMenu)}
             >
@@ -132,10 +132,10 @@ function TailorLayout({ children }) {
               </div>
               <span className="user-name-topbar">{user?.name?.split(' ')[0]}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 9l6 6 6-6"/>
+                <path d="M6 9l6 6 6-6" />
               </svg>
             </button>
-            
+
             {showUserMenu && (
               <div className="user-dropdown">
                 <div className="dropdown-header">
@@ -145,17 +145,17 @@ function TailorLayout({ children }) {
                 <div className="dropdown-divider"></div>
                 <Link to="/tailor/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
                   My Profile
                 </Link>
                 <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                   Logout
                 </button>
@@ -184,34 +184,34 @@ function TailorLayout({ children }) {
         <nav className="sidebar-nav">
           <Link to="/tailor/dashboard" className={`sidebar-link ${activeTab === 'dashboard' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="7" height="7"/>
-              <rect x="14" y="3" width="7" height="7"/>
-              <rect x="14" y="14" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
             </svg>
             Dashboard
           </Link>
           <Link to="/tailor/orders" className={`sidebar-link ${activeTab === 'orders' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
             </svg>
             My Orders
           </Link>
           <Link to="/tailor/profile" className={`sidebar-link ${activeTab === 'profile' ? 'active' : ''}`}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
             Profile
           </Link>
           <button onClick={handleLogout} className="sidebar-link logout-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
             Logout
           </button>

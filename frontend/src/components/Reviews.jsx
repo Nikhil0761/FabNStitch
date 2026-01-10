@@ -35,7 +35,15 @@ function Reviews() {
       quote: "The process was so easy. The free alteration service saved us money, and the fabric quality is unmatched.",
       author: "Anaya S.",
       title: "Hotel Manager"
-    }
+    },
+      {
+      id: 4,
+      rating: 5,
+      quote: "The attention to detail and quality checks were impressive. The uniforms looked premium and fit perfectly",
+      author: "Adarsh",
+      title: "Final Year Student"
+    },
+    
   ];
 
   // Helper function to render stars

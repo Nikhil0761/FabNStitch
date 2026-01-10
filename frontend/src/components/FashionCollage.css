@@ -1,0 +1,250 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ======================
+   SECTION
+   ====================== */
+.fashion-section {
+  padding: 48px 20px;
+  background: linear-gradient(to bottom, #ffffff, #f8f8f8);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ======================
+   HEADER
+   ====================== */
+.fashion-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.fashion-header h1 {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #111;
+  margin-bottom: 24px;
+}
+
+.fashion-header span {
+  color: #000;
+}
+
+/* ======================
+   BUTTON
+   ====================== */
+.fashion-btn {
+  padding: 14px 28px;
+  border-radius: 30px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ======================
+   COLLAGE
+   ====================== */
+.fashion-collage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+/* ======================
+   IMAGE WRAPPER – FLOATING CARD
+   ====================== */
+.img-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  cursor: pointer;
+  background: #ffffff;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  transition: transform 0.45s ease, box-shadow 0.45s ease;
+
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Floating variation */
+.img-wrap:nth-child(2) { animation-delay: 1s; }
+.img-wrap:nth-child(3) { animation-delay: 2s; }
+.img-wrap:nth-child(4) { animation-delay: 3s; }
+.img-wrap:nth-child(5) { animation-delay: 4s; }
+.img-wrap:nth-child(6) { animation-delay: 5s; }
+
+/* Hover lift */
+.img-wrap:hover {
+  transform: translateY(-14px) scale(1.03);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* ======================
+   IMAGE
+   ====================== */
+.img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 24px;
+
+  filter: brightness(0.85);
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.img-wrap:hover .img {
+  filter: brightness(0.35);
+  transform: scale(1.04);
+}
+
+/* ======================
+   IMAGE SIZES
+   ====================== */
+.tall {
+  width: 140px;
+  height: 320px;
+}
+
+.medium {
+  width: 160px;
+  height: 260px;
+}
+
+.center {
+  width: 200px;
+  height: 300px;
+  transform: translateY(-20px);
+}
+
+/* ======================
+   TEXT OVERLAY (HIDDEN BY DEFAULT)
+   ====================== */
+.img-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.2)
+  );
+
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.img-overlay span {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+
+  opacity: 0;
+  transform: translateY(12px);
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+/* SHOW TEXT ON HOVER */
+.img-wrap:hover .img-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.img-wrap:hover .img-overlay span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ======================
+   FLOAT ANIMATION
+   ====================== */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+/* ======================
+   TABLET
+   ====================== */
+@media (max-width: 900px) {
+  .fashion-header h1 {
+    font-size: 34px;
+  }
+
+  .fashion-collage {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    justify-items: center;
+  }
+
+  .center {
+    transform: none;
+  }
+}
+
+/* ======================
+   MOBILE
+   ====================== */
+@media (max-width: 480px) {
+  .fashion-section {
+    padding: 48px 16px;
+  }
+
+  .fashion-header h1 {
+    font-size: 26px;
+    line-height: 1.25;
+    margin-bottom: 18px;
+  }
+
+  .fashion-btn {
+    padding: 14px 22px;
+    font-size: 13px;
+    border-radius: 26px;
+  }
+
+  .fashion-collage {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .img-wrap {
+    width: 100%;
+    height: 220px;
+    animation: none; /* disable float on mobile */
+  }
+
+  /* Mobile UX: show text */
+  .img-overlay {
+    opacity: 1;
+    visibility: visible;
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .img-overlay span {
+    opacity: 1;
+    transform: none;
+    font-size: 12px;
+  }
+}

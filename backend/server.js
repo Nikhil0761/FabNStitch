@@ -1,64 +1,64 @@
 /* ============================================
    FabNStitch Backend Server
-   ============================================
-   
-   📚 LEARNING: Express.js Server Setup
-   
-   Express is a minimal web framework for Node.js
-   that makes building APIs simple.
-   
-   Key concepts:
-   - app.use() - Add middleware (code that runs on every request)
-   - app.get/post/put/delete() - Define API routes
-   - res.json() - Send JSON response
-   - req.body - Access request data
-   
-   ============================================ */
+============================================ */
 
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import "dotenv/config"; // ✅ MUST be first
 
-// Load environment variables
-dotenv.config();
+import express from "express";
+import cors from "cors";
 
-// Import routes
-const authRoutes = require('./routes/auth');
-const customerRoutes = require('./routes/customer');
-const tailorRoutes = require('./routes/tailor');
-const orderRoutes = require('./routes/orders');
+// Routes
+import authRoutes from "./routes/auth.js";
+import customerRoutes from "./routes/customer.js";
+import tailorRoutes from "./routes/tailor.js";
+import orderRoutes from "./routes/orders.js";
+import adminRoutes from "./routes/admin.js";
+import leadsRoutes from "./routes/leads.js";
 
-// Import database initialization
-const { initializeDatabase } = require('./database/init');
+import { initializeDatabase } from "./database/init.js";
 
-// Create Express app
+// Create app
 const app = express();
 
-// ============================================
-// MIDDLEWARE
-// ============================================
+/* ============================================
+   MIDDLEWARE
+============================================ */
 
-// Enable CORS (allows frontend to call backend)
-// In production, you can restrict this to specific domains
-app.use(cors({
-  origin: true, // Allow all origins (or set specific domains via FRONTEND_URL)
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// CORS Configuration - Update with your production URLs
+const allowedOrigins = [
+    "http://localhost:5173",      // Local development
+    "http://localhost:5174",      // Alternate local port
+    "http://localhost:3000",      // Alternate local port
+    "https://fabnstitch.com",     // Production domain (if you have one)
+    "https://www.fabnstitch.com", // Production www domain
+    // Add your Render frontend URL here after deployment:
+    // "https://your-frontend-name.onrender.com"
+];
 
-// Parse JSON request bodies
+// If FRONTEND_URL environment variable is set, add it to allowed origins
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+app.use(
+    cors({
+        origin: allowedOrigins,
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
+
 app.use(express.json());
 
-// Request logging (for development)
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
-  next();
+    console.log(`${new Date().toISOString()} | ${req.method} ${req.path}`);
+    next();
 });
 
-// ============================================
-// ROUTES
-// ============================================
+/* ============================================
+   ROUTES
+============================================ */
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -71,34 +71,33 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       customer: '/api/customer',
       tailor: '/api/tailor',
-      orders: '/api/orders'
+      orders: '/api/orders',
+      admin: '/api/admin',
+      leads: '/api/leads'
     },
     documentation: 'API routes are prefixed with /api'
   });
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'FabNStitch API is running!' });
+app.get("/api/health", (req, res) => {
+    res.json({
+        status: "ok",
+        message: "FabNStitch API is running 🚀",
+    });
 });
 
-// Auth routes (login, register, etc.)
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/customer", customerRoutes);
+app.use("/api/tailor", tailorRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/leads", leadsRoutes);
 
-// Customer routes (profile, dashboard data)
-app.use('/api/customer', customerRoutes);
+/* ============================================
+   ERROR HANDLING
+============================================ */
 
-// Tailor routes (orders, status updates)
-app.use('/api/tailor', tailorRoutes);
-
-// Order routes
-app.use('/api/orders', orderRoutes);
-
-// ============================================
-// ERROR HANDLING
-// ============================================
-
-// 404 handler
 app.use((req, res) => {
   console.error(`404 - Route not found: ${req.method} ${req.path}`);
   res.status(404).json({ 
@@ -110,39 +109,40 @@ app.use((req, res) => {
       customer: ['/api/customer/dashboard', '/api/customer/profile', '/api/customer/orders', '/api/customer/measurements', '/api/customer/tickets'],
       tailor: ['/api/tailor/dashboard', '/api/tailor/orders', '/api/tailor/orders/:id', '/api/tailor/orders/:id/status', '/api/tailor/profile'],
       orders: ['/api/orders/track/:orderId'],
+      admin: ['/api/admin/dashboard', '/api/admin/customers', '/api/admin/tailors', '/api/admin/orders', '/api/admin/tickets', '/api/admin/leads'],
+      leads: ['/api/leads'],
       health: ['/api/health']
     }
   });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(500).json({ error: 'Internal server error' });
+    console.error("Error:", err);
+    res.status(500).json({ error: "Internal server error" });
 });
 
-// ============================================
-// START SERVER
-// ============================================
+/* ============================================
+   START SERVER
+============================================ */
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5001; // process.env.PORT || 5001;
 
-// Initialize database then start server
 initializeDatabase()
-  .then(() => {
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`
+    .then(() => {
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`
 ╔═══════════════════════════════════════════╗
 ║       FabNStitch Backend Server           ║
 ╠═══════════════════════════════════════════╣
-║  🚀 Server running on port ${PORT}            ║
-║  🔧 Environment: ${process.env.NODE_ENV || 'development'}            ║
+║  🚀 Server running on port ${PORT}        ║
+║  🔧 Environment: ${process.env.NODE_ENV}  ║
 ╚═══════════════════════════════════════════╝
       `);
+        });
+    })
+    .catch((err) => {
+        console.error("Failed to initialize database:", err);
+        process.exit(1);
     });
-  })
-  .catch(err => {
-    console.error('Failed to initialize database:', err);
-    process.exit(1);
-  });
 
+console.log("JWT:", process.env.JWT_SECRET);

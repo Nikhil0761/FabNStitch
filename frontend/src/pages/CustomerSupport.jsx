@@ -1,25 +1,33 @@
-/* ============================================
-   Customer Support Page
-   ============================================ */
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  MessageSquare,
+  Phone,
+  Mail,
+  Plus,
+  X,
+  AlertCircle,
+  FileText,
+  CheckCircle,
+  Clock,
+  HelpCircle,
+  ExternalLink
+} from 'lucide-react';
 import DashboardLayout from '../components/DashboardLayout';
 import './CustomerSupport.css';
-
 import { API_URL } from '../config';
 
 function CustomerSupport() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
-  
+  const token = localStorage.getItem('fabnstitch_token');
+
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showNewTicketModal, setShowNewTicketModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  
+
   // New ticket form
   const [newTicket, setNewTicket] = useState({
     subject: '',
@@ -47,7 +55,7 @@ function CustomerSupport() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          localStorage.removeItem('token');
+          localStorage.removeItem('fabnstitch_token');
           navigate('/login');
           return;
         }
@@ -71,7 +79,7 @@ function CustomerSupport() {
 
   const handleCreateTicket = async (e) => {
     e.preventDefault();
-    
+
     if (!newTicket.subject.trim() || !newTicket.message.trim()) {
       setMessage({ type: 'error', text: 'Please fill in all fields' });
       return;
@@ -118,209 +126,211 @@ function CustomerSupport() {
     });
   };
 
-  const getStatusClass = (status) => {
-    const classes = {
-      open: 'status-open',
-      in_progress: 'status-progress',
-      resolved: 'status-resolved',
-      closed: 'status-closed'
-    };
-    return classes[status] || 'status-open';
+  const getStatusConfig = (status) => {
+    switch (status) {
+      case 'open': return { label: 'Open', icon: <AlertCircle size={14} />, class: 'status-open' };
+      case 'in_progress': return { label: 'In Progress', icon: <Clock size={14} />, class: 'status-progress' };
+      case 'resolved': return { label: 'Resolved', icon: <CheckCircle size={14} />, class: 'status-resolved' };
+      case 'closed': return { label: 'Closed', icon: <X size={14} />, class: 'status-closed' };
+      default: return { label: status, icon: <HelpCircle size={14} />, class: 'status-open' };
+    }
   };
 
-  const getStatusLabel = (status) => {
-    const labels = {
-      open: 'Open',
-      in_progress: 'In Progress',
-      resolved: 'Resolved',
-      closed: 'Closed'
-    };
-    return labels[status] || status;
-  };
-
-  const getPriorityClass = (priority) => {
-    const classes = {
-      low: 'priority-low',
-      medium: 'priority-medium',
-      high: 'priority-high',
-      urgent: 'priority-urgent'
-    };
-    return classes[priority] || 'priority-medium';
-  };
-
-  const getPriorityIcon = (priority) => {
-    const icons = {
-      low: '🟢',
-      medium: '🟡',
-      high: '🟠',
-      urgent: '🔴'
-    };
-    return icons[priority] || '🟡';
+  const getPriorityConfig = (priority) => {
+    switch (priority) {
+      case 'low': return { label: 'Low', class: 'priority-low' };
+      case 'medium': return { label: 'Medium', class: 'priority-medium' };
+      case 'high': return { label: 'High', class: 'priority-high' };
+      case 'urgent': return { label: 'Urgent', class: 'priority-urgent' };
+      default: return { label: priority, class: 'priority-medium' };
+    }
   };
 
   return (
-    <DashboardLayout>
-      <div className="support-page">
-        {/* Page Header */}
-        <div className="page-header">
+    <DashboardLayout role="customer">
+      <div className="dashboard-container">
+        <div className="dashboard-header">
           <div>
-            <h1>Support</h1>
-            <p>Get help with your orders and account</p>
+            <h1>Customer Support</h1>
+            <p>We're here to help with your orders and inquiries</p>
           </div>
-          <button className="btn btn-primary" onClick={() => setShowNewTicketModal(true)}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            New Ticket
+          <button className="primary-btn" onClick={() => setShowNewTicketModal(true)}>
+            <Plus size={18} /> New Ticket
           </button>
         </div>
 
-        {/* Message Banner */}
         {message.text && (
           <div className={`message-banner ${message.type}`}>
-            {message.type === 'success' ? '✓' : '⚠'} {message.text}
+            {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+            {message.text}
           </div>
         )}
 
-        {/* Quick Help Section */}
-        <div className="quick-help-section">
-          <h2>Quick Help</h2>
-          <div className="help-cards">
-            <a href="tel:+919920077539" className="help-card">
-              <div className="help-icon">📞</div>
-              <h3>Call Us</h3>
-              <p>+91 99200 77539</p>
-              <span>Mon-Sat, 10AM-7PM</span>
-            </a>
-            <a href="mailto:support@fabnstitch.com" className="help-card">
-              <div className="help-icon">✉️</div>
-              <h3>Email Us</h3>
-              <p>support@fabnstitch.com</p>
-              <span>Response within 24hrs</span>
-            </a>
-            <a href="https://wa.me/919920077539" target="_blank" rel="noopener noreferrer" className="help-card">
-              <div className="help-icon">💬</div>
-              <h3>WhatsApp</h3>
-              <p>Chat with us</p>
-              <span>Quick responses</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Tickets Section */}
-        <div className="tickets-section">
-          <h2>Your Support Tickets</h2>
-          
-          {isLoading ? (
-            <div className="tickets-loading">
-              <div className="loader"></div>
-              <p>Loading tickets...</p>
-            </div>
-          ) : tickets.length === 0 ? (
-            <div className="tickets-empty">
-              <div className="empty-icon">🎫</div>
-              <h3>No support tickets</h3>
-              <p>You haven't created any support tickets yet.</p>
-              <button className="btn btn-primary" onClick={() => setShowNewTicketModal(true)}>
-                Create Your First Ticket
-              </button>
-            </div>
-          ) : (
-            <div className="tickets-list">
-              {tickets.map(ticket => (
-                <div 
-                  key={ticket.id} 
-                  className="ticket-card"
-                  onClick={() => setSelectedTicket(ticket)}
-                >
-                  <div className="ticket-header">
-                    <span className="ticket-id">#{ticket.id}</span>
-                    <span className={`status-badge ${getStatusClass(ticket.status)}`}>
-                      {getStatusLabel(ticket.status)}
-                    </span>
-                  </div>
-                  <h3 className="ticket-subject">{ticket.subject}</h3>
-                  <p className="ticket-preview">
-                    {ticket.message.length > 100 
-                      ? ticket.message.substring(0, 100) + '...' 
-                      : ticket.message}
-                  </p>
-                  <div className="ticket-footer">
-                    <span className={`priority-badge ${getPriorityClass(ticket.priority)}`}>
-                      {getPriorityIcon(ticket.priority)} {ticket.priority}
-                    </span>
-                    <span className="ticket-date">{formatDate(ticket.created_at)}</span>
-                  </div>
+        <div className="support-grid">
+          {/* Quick Help Section */}
+          <div className="quick-help-section">
+            <h2 className="section-title">Contact Us Directly</h2>
+            <div className="help-cards-grid">
+              <a href="tel:+919920077539" className="help-card">
+                <div className="icon-wrapper phone">
+                  <Phone size={24} />
                 </div>
-              ))}
+                <div className="help-content">
+                  <h3>Call Support</h3>
+                  <p>+91 99200 77539</p>
+                  <span className="sub-text">Mon-Sat, 10AM-7PM</span>
+                </div>
+              </a>
+
+              <a href="mailto:support@fabnstitch.com" className="help-card">
+                <div className="icon-wrapper mail">
+                  <Mail size={24} />
+                </div>
+                <div className="help-content">
+                  <h3>Email Us</h3>
+                  <p>support@fabnstitch.com</p>
+                  <span className="sub-text">Response within 24hrs</span>
+                </div>
+              </a>
+
+              <a href="https://wa.me/919920077539" target="_blank" rel="noopener noreferrer" className="help-card">
+                <div className="icon-wrapper whatsapp">
+                  <MessageSquare size={24} />
+                </div>
+                <div className="help-content">
+                  <h3>WhatsApp</h3>
+                  <p>Chat with us</p>
+                  <span className="sub-text">Quick responses</span>
+                </div>
+                <ExternalLink size={16} className="external-icon" />
+              </a>
             </div>
-          )}
+          </div>
+
+          {/* Tickets Section */}
+          <div className="tickets-section">
+            <h2 className="section-title">Your Support Tickets</h2>
+
+            {isLoading ? (
+              <div className="loading-state">
+                <div className="spinner"></div>
+                <p>Loading your tickets...</p>
+              </div>
+            ) : tickets.length === 0 ? (
+              <div className="empty-state">
+                <FileText size={48} className="empty-icon" />
+                <h3>No tickets yet</h3>
+                <p>Have a question or issue? Create a new support ticket.</p>
+                <button className="secondary-btn" onClick={() => setShowNewTicketModal(true)}>
+                  Create Ticket
+                </button>
+              </div>
+            ) : (
+              <div className="tickets-list">
+                {tickets.map(ticket => {
+                  const status = getStatusConfig(ticket.status);
+                  const priority = getPriorityConfig(ticket.priority);
+
+                  return (
+                    <div
+                      key={ticket.id}
+                      className="ticket-card"
+                      onClick={() => setSelectedTicket(ticket)}
+                    >
+                      <div className="ticket-main">
+                        <div className="ticket-header-row">
+                          <span className="ticket-id">#{ticket.id}</span>
+                          <span className={`status-badge ${status.class}`}>
+                            {status.icon} {status.label}
+                          </span>
+                        </div>
+                        <h3 className="ticket-subject">{ticket.subject}</h3>
+                        <p className="ticket-preview">
+                          {ticket.message.length > 80
+                            ? ticket.message.substring(0, 80) + '...'
+                            : ticket.message}
+                        </p>
+                      </div>
+
+                      <div className="ticket-meta">
+                        <span className={`priority-indicator ${priority.class}`}>
+                          {priority.label} Priority
+                        </span>
+                        <span className="ticket-date">
+                          {formatDate(ticket.created_at)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* New Ticket Modal */}
         {showNewTicketModal && (
-          <div className="modal-overlay" onClick={() => setShowNewTicketModal(false)}>
-            <div className="ticket-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-overlay">
+            <div className="modal-content standard-modal">
               <div className="modal-header">
                 <h2>Create Support Ticket</h2>
-                <button className="modal-close" onClick={() => setShowNewTicketModal(false)}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
+                <button className="close-btn" onClick={() => setShowNewTicketModal(false)}>
+                  <X size={24} />
                 </button>
               </div>
-              
-              <form onSubmit={handleCreateTicket}>
-                <div className="modal-body">
-                  <div className="form-group">
-                    <label htmlFor="subject">Subject</label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={newTicket.subject}
-                      onChange={handleNewTicketChange}
-                      placeholder="Brief description of your issue"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="priority">Priority</label>
+
+              <form onSubmit={handleCreateTicket} className="modal-form">
+                <div className="form-group">
+                  <label htmlFor="subject">Subject</label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={newTicket.subject}
+                    onChange={handleNewTicketChange}
+                    placeholder="Brief description of your issue"
+                    required
+                    className="modern-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="priority">Priority</label>
+                  <div className="select-wrapper">
                     <select
                       id="priority"
                       name="priority"
                       value={newTicket.priority}
                       onChange={handleNewTicketChange}
+                      className="modern-select"
                     >
-                      <option value="low">🟢 Low - General inquiry</option>
-                      <option value="medium">🟡 Medium - Need help soon</option>
-                      <option value="high">🟠 High - Urgent issue</option>
-                      <option value="urgent">🔴 Urgent - Critical problem</option>
+                      <option value="low">Low - General inquiry</option>
+                      <option value="medium">Medium - Need help soon</option>
+                      <option value="high">High - Urgent issue</option>
+                      <option value="urgent">Urgent - Critical problem</option>
                     </select>
                   </div>
-                  
-                  <div className="form-group">
-                    <label htmlFor="message">Message</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={newTicket.message}
-                      onChange={handleNewTicketChange}
-                      placeholder="Describe your issue in detail..."
-                      rows="5"
-                      required
-                    />
-                  </div>
                 </div>
-                
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-outline" onClick={() => setShowNewTicketModal(false)}>
+
+                <div className="form-group">
+                  <label htmlFor="message">Message Details</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={newTicket.message}
+                    onChange={handleNewTicketChange}
+                    placeholder="Describe your issue in detail..."
+                    rows="5"
+                    required
+                    className="modern-textarea"
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button type="button" className="cancel-btn" onClick={() => setShowNewTicketModal(false)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  <button type="submit" className="submit-btn" disabled={isSubmitting}>
                     {isSubmitting ? 'Creating...' : 'Create Ticket'}
                   </button>
                 </div>
@@ -331,61 +341,55 @@ function CustomerSupport() {
 
         {/* Ticket Detail Modal */}
         {selectedTicket && (
-          <div className="modal-overlay" onClick={() => setSelectedTicket(null)}>
-            <div className="ticket-detail-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-overlay">
+            <div className="modal-content detail-modal">
               <div className="modal-header">
-                <div className="ticket-detail-title">
-                  <span className="ticket-id">Ticket #{selectedTicket.id}</span>
-                  <span className={`status-badge large ${getStatusClass(selectedTicket.status)}`}>
-                    {getStatusLabel(selectedTicket.status)}
+                <div className="ticket-title-group">
+                  <span className="ticket-id-badge">#{selectedTicket.id}</span>
+                  <span className={`status-badge ${getStatusConfig(selectedTicket.status).class}`}>
+                    {getStatusConfig(selectedTicket.status).label}
                   </span>
                 </div>
-                <button className="modal-close" onClick={() => setSelectedTicket(null)}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
+                <button className="close-btn" onClick={() => setSelectedTicket(null)}>
+                  <X size={24} />
                 </button>
               </div>
-              
-              <div className="modal-body">
-                <div className="ticket-detail-meta">
-                  <div className="meta-item">
-                    <span className="meta-label">Priority</span>
-                    <span className={`priority-badge ${getPriorityClass(selectedTicket.priority)}`}>
-                      {getPriorityIcon(selectedTicket.priority)} {selectedTicket.priority}
+
+              <div className="modal-body scrollable">
+                <div className="ticket-info-grid">
+                  <div className="info-item">
+                    <span className="label">Subject</span>
+                    <span className="value strong">{selectedTicket.subject}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="label">Priority</span>
+                    <span className={`priority-badge ${getPriorityConfig(selectedTicket.priority).class}`}>
+                      {getPriorityConfig(selectedTicket.priority).label}
                     </span>
                   </div>
-                  <div className="meta-item">
-                    <span className="meta-label">Created</span>
-                    <span className="meta-value">{formatDate(selectedTicket.created_at)}</span>
+                  <div className="info-item">
+                    <span className="label">Created On</span>
+                    <span className="value">{formatDate(selectedTicket.created_at)}</span>
                   </div>
-                  {selectedTicket.updated_at && selectedTicket.updated_at !== selectedTicket.created_at && (
-                    <div className="meta-item">
-                      <span className="meta-label">Updated</span>
-                      <span className="meta-value">{formatDate(selectedTicket.updated_at)}</span>
-                    </div>
-                  )}
                 </div>
-                
-                <div className="ticket-detail-content">
-                  <h3>{selectedTicket.subject}</h3>
-                  <p>{selectedTicket.message}</p>
+
+                <div className="ticket-message-box">
+                  <label>Description</label>
+                  <div className="message-content">
+                    {selectedTicket.message}
+                  </div>
                 </div>
 
                 {selectedTicket.status === 'open' && (
-                  <div className="ticket-status-note">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"/>
-                      <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    <p>Our support team will respond to your ticket within 24 hours.</p>
+                  <div className="info-banner">
+                    <Clock size={18} />
+                    <p>Our support team usually responds within 24 hours.</p>
                   </div>
                 )}
               </div>
-              
+
               <div className="modal-footer">
-                <button className="btn btn-outline" onClick={() => setSelectedTicket(null)}>
+                <button className="secondary-btn" onClick={() => setSelectedTicket(null)}>
                   Close
                 </button>
               </div>
