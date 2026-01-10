@@ -26,6 +26,16 @@ import TailorDashboard from './pages/TailorDashboard';
 import TailorOrders from './pages/TailorOrders';
 import TailorProfile from './pages/TailorProfile';
 
+// Admin Pages
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminCreateOrder from "./pages/AdminCreateOrder";
+import AdminOrders from "./pages/AdminOrders";
+import AdminUsers from "./pages/AdminUsers";
+import AdminTailors from "./pages/AdminTailors";
+import AdminSupport from "./pages/AdminSupport";
+import AdminLeads from "./pages/AdminLeads";
+import AdminCreateUser from "./pages/AdminCreateUser";
+
 import "./App.css";
 
 /* ================= Layout ================= */
@@ -70,10 +80,53 @@ function AppContent() {
         <Routes>
           <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           
-          {/* Tailor Dashboard Routes */}
-          <Route path="/tailor/dashboard" element={<TailorDashboard />} />
-          <Route path="/tailor/orders" element={<TailorOrders />} />
-          <Route path="/tailor/profile" element={<TailorProfile />} />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/create-order" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminCreateOrder />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/orders" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminOrders />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/users" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminUsers />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/create-user" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminCreateUser />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/tailors" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminTailors />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/support" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminSupport />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/leads" element={
+            <ProtectedRoute roles={["admin"]}>
+              <AdminLeads />
+            </ProtectedRoute>
+          } />
         </Routes>
       )}
 

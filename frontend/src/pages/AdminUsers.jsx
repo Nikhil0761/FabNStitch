@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
 import { API_URL } from "../config";
@@ -13,16 +13,11 @@ function AdminUsers() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/admin");
-      return;
-    }
-    fetchCustomers();
-  }, [token, navigate]);
-
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
+      console.log("🔍 Fetching customers from:", `${API_URL}/admin/customers`);
+      console.log("🔑 Using token:", token ? token.substring(0, 20) + "..." : "No token");
+      
       const response = await fetch(`${API_URL}/admin/customers`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -30,17 +25,40 @@ function AdminUsers() {
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch customers");
+      console.log("📡 Response status:", response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Response not OK:", errorText);
+        throw new Error(`Failed to fetch customers: ${response.status} ${errorText}`);
+      }
 
       const data = await response.json();
-      setCustomers(data.customers);
+      console.log("✅ Customers data received:", data);
+      console.log("📊 Number of customers:", data.customers?.length || 0);
+      
+      if (data.customers) {
+        setCustomers(data.customers);
+      } else {
+        console.error("❌ No customers array in response:", data);
+        setError("Invalid response format from server");
+      }
     } catch (err) {
-      console.error("Customers error:", err);
+      console.error("❌ Customers error:", err);
+      console.error("Error stack:", err.stack);
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin");
+      return;
+    }
+    fetchCustomers();
+  }, [token, navigate, fetchCustomers]);
 
   const filteredCustomers = customers.filter((customer) => {
     if (!searchTerm) return true;
@@ -94,6 +112,16 @@ function AdminUsers() {
             </button>
           </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="alert alert-error" style={{ marginBottom: '20px', padding: '15px', background: '#fee', border: '1px solid #fcc', borderRadius: '5px', color: '#c00' }}>
+            <strong>⚠️ Error:</strong> {error}
+            <button onClick={fetchCustomers} style={{ marginLeft: '15px', padding: '5px 10px' }}>
+              Retry
+            </button>
+          </div>
+        )}
 
         {/* Search */}
         <div className="search-section">

@@ -29,8 +29,14 @@ function AdminOrders() {
       navigate("/admin");
       return;
     }
-    fetchOrders();
-    fetchTailors();
+    
+    const loadData = async () => {
+      await fetchOrders();
+      await fetchTailors();
+    };
+    
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
   const fetchOrders = async () => {
@@ -194,6 +200,16 @@ function AdminOrders() {
             Create Order
           </button>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="alert alert-error" style={{ marginBottom: '20px', padding: '15px', background: '#fee', border: '1px solid #fcc', borderRadius: '5px', color: '#c00' }}>
+            <strong>⚠️  Error:</strong> {error}
+            <button onClick={() => setError('')} style={{ marginLeft: '15px', padding: '5px 10px', cursor: 'pointer' }}>
+              Dismiss
+            </button>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="orders-filters">

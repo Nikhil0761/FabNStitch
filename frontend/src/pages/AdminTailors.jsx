@@ -19,6 +19,7 @@ function AdminTailors() {
       return;
     }
     fetchTailors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
   const fetchTailors = async () => {
