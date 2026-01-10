@@ -311,7 +311,7 @@ router.post("/create-order", authenticateToken, adminOnly, (req, res) => {
       db.query(
         `INSERT INTO measurements
          (user_id, chest, waist, shoulders, arm_length, jacket_length, neck)
-         VALUES (?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(user_id) DO UPDATE SET
            chest = ?, waist = ?, shoulders = ?, arm_length = ?, jacket_length = ?, neck = ?`,
         [customer_id, chest, waist, shoulders, arm_length, jacket_length, neck,
