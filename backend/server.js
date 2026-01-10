@@ -125,7 +125,7 @@ app.use((err, req, res, next) => {
    START SERVER
 ============================================ */
 
-const PORT = 5001; // process.env.PORT || 5001;
+const PORT = process.env.PORT || 5001;
 
 initializeDatabase()
     .then(() => {
@@ -135,7 +135,7 @@ initializeDatabase()
 ║       FabNStitch Backend Server           ║
 ╠═══════════════════════════════════════════╣
 ║  🚀 Server running on port ${PORT}        ║
-║  🔧 Environment: ${process.env.NODE_ENV}  ║
+║  🔧 Environment: ${process.env.NODE_ENV || 'development'}  ║
 ╚═══════════════════════════════════════════╝
       `);
         });
@@ -144,5 +144,3 @@ initializeDatabase()
         console.error("Failed to initialize database:", err);
         process.exit(1);
     });
-
-console.log("JWT:", process.env.JWT_SECRET);
