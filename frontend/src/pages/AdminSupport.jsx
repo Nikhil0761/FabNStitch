@@ -21,6 +21,7 @@ function AdminSupport() {
       return;
     }
     fetchTickets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
   const fetchTickets = async () => {

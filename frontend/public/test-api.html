@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - FabNStitch</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover { background: #45a049; }
+        .output {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            border-left: 3px solid #4CAF50;
+            background: #f0f8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 FabNStitch API Diagnostic Tool</h1>
+        <p>This tool will help diagnose the admin customers page issue.</p>
+        
+        <div class="step">
+            <strong>Step 1:</strong> Login as Admin
+            <button onclick="testLogin()">Test Login</button>
+        </div>
+        
+        <div class="step">
+            <strong>Step 2:</strong> Fetch Customers
+            <button onclick="testCustomers()">Test Customers API</button>
+        </div>
+        
+        <div class="step">
+            <strong>Step 3:</strong> Check CORS
+            <button onclick="testCORS()">Test CORS</button>
+        </div>
+        
+        <button onclick="runAllTests()" style="background: #2196F3;">Run All Tests</button>
+        <button onclick="clearOutput()">Clear Output</button>
+        
+        <div id="output" class="output">Output will appear here...</div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5001/api';
+        let token = null;
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const time = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            output.innerHTML += `<span class="${className}">[${time}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        async function testLogin() {
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            log('Testing Admin Login...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@fabnstitch.com',
+                        password: 'admin123'
+                    })
+                });
+
+                log(`Response Status: ${response.status}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Login Failed: ${errorText}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.token) {
+                    token = data.token;
+                    localStorage.setItem('fabnstitch_token', token);
+                    log(`✅ Login Successful!`, 'success');
+                    log(`Token: ${token.substring(0, 30)}...`, 'success');
+                    log(`User Role: ${data.role}`, 'success');
+                } else {
+                    log(`❌ No token in response`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Login Error: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`, 'error');
+            }
+        }
+
+        async function testCustomers() {
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            log('Testing Customers API...', 'info');
+            
+            // Check if we have a token
+            if (!token) {
+                token = localStorage.getItem('fabnstitch_token');
+            }
+            
+            if (!token) {
+                log('❌ No token available. Please login first.', 'error');
+                return;
+            }
+            
+            log(`Using token: ${token.substring(0, 30)}...`, 'info');
+            
+            try {
+                log(`Fetching: ${API_URL}/admin/customers`, 'info');
+                
+                const response = await fetch(`${API_URL}/admin/customers`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                log(`Response Status: ${response.status}`, 'info');
+                log(`Response Headers:`, 'info');
+                response.headers.forEach((value, key) => {
+                    log(`  ${key}: ${value}`, 'info');
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ API Failed: ${errorText}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.customers) {
+                    log(`✅ Customers Retrieved Successfully!`, 'success');
+                    log(`Total Customers: ${data.customers.length}`, 'success');
+                    log(`\nFirst 3 Customers:`, 'success');
+                    data.customers.slice(0, 3).forEach((customer, index) => {
+                        log(`${index + 1}. ${customer.name} (${customer.email})`, 'success');
+                    });
+                    log(`\nFull Response:`, 'info');
+                    log(JSON.stringify(data, null, 2), 'info');
+                } else {
+                    log(`⚠️ Response has no customers array`, 'error');
+                    log(JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                log(`❌ Customers API Error: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`, 'error');
+            }
+        }
+
+        async function testCORS() {
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            log('Testing CORS Configuration...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/customers`, {
+                    method: 'OPTIONS'
+                });
+
+                log(`OPTIONS Response Status: ${response.status}`, 'info');
+                log(`CORS Headers:`, 'info');
+                log(`  Access-Control-Allow-Origin: ${response.headers.get('Access-Control-Allow-Origin')}`, 'info');
+                log(`  Access-Control-Allow-Methods: ${response.headers.get('Access-Control-Allow-Methods')}`, 'info');
+                log(`  Access-Control-Allow-Headers: ${response.headers.get('Access-Control-Allow-Headers')}`, 'info');
+                
+                if (response.headers.get('Access-Control-Allow-Origin')) {
+                    log(`✅ CORS is configured`, 'success');
+                } else {
+                    log(`⚠️ CORS headers not found`, 'error');
+                }
+            } catch (error) {
+                log(`❌ CORS Test Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function runAllTests() {
+            clearOutput();
+            log('🚀 Running All Diagnostic Tests...', 'info');
+            log('');
+            
+            await testLogin();
+            log('');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testCustomers();
+            log('');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testCORS();
+            log('');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            log('✅ All Tests Complete!', 'success');
+        }
+
+        // Auto-load token on page load
+        window.addEventListener('load', () => {
+            const storedToken = localStorage.getItem('fabnstitch_token');
+            if (storedToken) {
+                token = storedToken;
+                log(`Found stored token: ${token.substring(0, 30)}...`, 'info');
+            }
+        });
+    </script>
+</body>
+</html>
